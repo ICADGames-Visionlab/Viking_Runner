@@ -4,6 +4,7 @@ player = {}
 local run = 0
 local state = 0
 local localGravity = -600
+floor = 378
 
 function player.load()
   player.runSheet = love.graphics.newImage("/Assets/Character/run.png")
@@ -103,8 +104,16 @@ function player.update(dt)
   end
 end
 
+function player.reset()
+  player.x = 0
+  player.y = 0
+  player.xVel = 0
+  player.yVel = 0
+end
+
 function player.draw()
   sprite = player.sprites[state]
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
-  love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,378-player.y,0,0.35,0.35)
+  love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,floor-player.y,0,0.35,0.35)
+  love.graphics.rectangle("line", player.x,378-player.y, player.width, player.height)
 end
