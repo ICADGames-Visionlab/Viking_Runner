@@ -1,7 +1,7 @@
 stage = {}
 
 function stage_load()
-  stage.sprite = love.graphics.newImage("/Assets/background/test.png")
+  stage.sprite = love.graphics.newImage("/Assets/Background/test.png")
   stage.width = love.graphics.getWidth()
   stage.height = love.graphics.getHeight()
   stage.scaleX = stage.width / stage.sprite:getWidth()
