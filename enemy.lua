@@ -2,12 +2,15 @@ require "dragon"
 require "player"
 
 enemies = {}
+dragonId = 1
 
 function enemies.load()
-  enemies[1] = dragon
-  for i,v in ipairs(enemies) do
-    v.load()
-  end
+  loadEnemy(dragonId, dragon)
+end
+
+function loadEnemy(id, class)
+  enemies[id] = class
+  class.load()
 end
 
 function enemies.update(dt)
@@ -17,7 +20,9 @@ function enemies.update(dt)
       enemies.collision(w, v, player)
     end
   end
-  dragon.update(dt)
+  for i,v in ipairs(enemies) do
+    v.update(dt)
+  end
 end
 
 function enemies.draw()

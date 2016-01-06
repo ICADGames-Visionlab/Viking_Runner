@@ -51,6 +51,7 @@ function player.load()
   player.jumpForce = 400
   player.y = 0
   player.x = 0
+  player.hasShield = false
 end
 
 function player.keypressed(key)
