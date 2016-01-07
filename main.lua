@@ -1,4 +1,5 @@
 require "conf"
+require "audio"
 require "menu"
 require "game"
 
@@ -6,6 +7,7 @@ local state = game
 
 function love.load()
   --menu.load()
+  audio.load()
   game.load()
 end
 

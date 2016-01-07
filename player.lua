@@ -81,6 +81,7 @@ function player.load()
   player.blinkTime = 0.1
   axe.load()
   shield.load(player)
+  audio.playPlayerRun()
 end
 
 function player.keypressed(key)
@@ -95,6 +96,7 @@ end
 
 function player.jump()
   if not player.isJumping then
+    audio.playPlayerJump()
     player.isJumping = true
     player.yVel = player.jumpForce
     animComp.restart(player.sprites[jump].comp)
@@ -125,6 +127,7 @@ end
 function player.reachFloor()
   player.isJumping = false
   state = run
+  audio.playPlayerRun()
 end
 
 function player.update(dt)
