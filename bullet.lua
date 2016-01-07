@@ -1,3 +1,5 @@
+require "contact"
+
 bullet = {}
 
 function bullet.load()
@@ -18,14 +20,19 @@ end
 function bullet.randomSpawn()
   randomNumber = love.math.random()
   bulletPos = randomNumber>0.5 and 0 or 1
-  rnd = 282 + 100*bulletPos
+  rnd = 302 + 200*bulletPos
   table.insert(bullet.list, {x=love.graphics.getWidth(),y=rnd})
 end
 
 function bullet.update(dt)
+  local p = player
   for i,v in ipairs(bullet.list) do
     v.x = v.x + bullet.velocity*dt
     if(v.x+bullet.width<0) then
+      table.remove(bullet.list,i)
+      bullet.randomSpawn()
+    elseif contact.isInRectContact(p.x,p.y,p.width,p.height,v.x,v.y,bullet.width,bullet.height) then
+      player.reset()
       table.remove(bullet.list,i)
       bullet.randomSpawn()
     end
@@ -35,5 +42,6 @@ end
 function bullet.draw(dt)
   for i,v in ipairs(bullet.list) do
     love.graphics.draw(bullet.image,v.x,v.y,0,bullet.sw, bullet.sh)
+    love.graphics.rectangle("line",v.x,v.y,bullet.width,bullet.height)
   end
 end

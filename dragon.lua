@@ -16,7 +16,8 @@ function dragon.load()
   dragon.height = 72
   dragon.swapTime = 1.5
   dragon.moveTime = 0.5
-  dragon.speedY = 100/dragon.moveTime
+  dragon.yDist = 200
+  dragon.speedY = dragon.yDist/dragon.moveTime
   dragon.speedX = love.graphics.getWidth()/5
   dragon.spawn()
 end
@@ -31,7 +32,7 @@ function dragon.update(dt)
     if v.timer>dragon.swapTime then
       v.timer = 0
       v.move = dragon.moveTime
-      if not v.floor then v.moveTo = 100 else v.moveTo = 0 end
+      if not v.floor then v.moveTo = dragon.yDist else v.moveTo = 0 end
     end
     if v.move>0 then
       v.move = v.move-dt
@@ -44,7 +45,11 @@ function dragon.update(dt)
     end
     v.x = v.x - dragon.speedX*dt
     if v.x+dragon.width<0 then
-      v.x = love.graphics.getWidth()
+      dragon.replace(v)
     end
   end
+end
+
+function dragon.replace(v)
+  v.x = love.graphics.getWidth()
 end

@@ -28,21 +28,20 @@ end
 function enemies.draw()
   for i,v in ipairs(enemies) do
     for j,w in ipairs(v.list) do
-      love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,282+w.y,0,1,1)
-      love.graphics.rectangle("line",w.x,282+w.y,72,72)
+      love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,302+w.y,0,1,1)
+      love.graphics.rectangle("line",w.x,302+w.y,72,72)
     end
   end
 end
 
 function enemies.collision(enemy, class, player)
   if(player.x>enemy.x) then compx=class.width else compx=player.width end
-  py = floor - player.y
-  ey = 282 + enemy.y
+  py = player.y
+  ey = 302 + enemy.y
   if(py>ey) then compy=class.height else compy=player.height end
 	if (math.abs(player.x - enemy.x)<= compx and
 	math.abs(py - ey)<= compy) then--and player.invTime==0 then
-		player.x=0
-		player.y=0
+		player.reset()
     --[[
     player.life = player.life-1
     if player.life==0 then

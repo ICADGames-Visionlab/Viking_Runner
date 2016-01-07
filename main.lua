@@ -4,7 +4,7 @@ require "conf"
 require "bullet"
 
 function love.load()
-  stage_load()
+  stage.load()
   player.load()
   enemies.load()
   bullet.load()
@@ -15,14 +15,14 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
-  stage_update(dt)
+  stage.update(dt)
   player.update(dt)
   enemies.update(dt)
   bullet.update(dt)
 end
 
 function love.draw()
-  stage_draw()
+  stage.draw()
   player.draw()
   enemies.draw()
   bullet.draw()

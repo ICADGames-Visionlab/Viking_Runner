@@ -1,10 +1,13 @@
 require "stage"
+require "axe"
+require "shield"
 
 player = {}
 local run = 0
 local state = 0
-local localGravity = -600
-floor = 378
+local localGravity = -1100
+--floor = 378
+floor = 478
 
 function player.load()
   player.runSheet = love.graphics.newImage("/Assets/Character/run.png")
@@ -34,6 +37,8 @@ function player.load()
   player.jumpKey = " "
   player.rightKey = "right"
   player.leftKey = "left"
+  player.attackKey = "a"
+  player.moveDownKey = "down"
   --for i=0, 10 do
     --x = i%5
     --y = math.floor(i/5) --* 370/h
@@ -48,15 +53,21 @@ function player.load()
   player.xVel = 0
   player.yVel = 0
   player.velForce = 0.4
-  player.jumpForce = 400
-  player.y = 0
+  player.jumpForce = 650
+  player.y = floor
   player.x = 0
   player.hasShield = false
+  axe.load()
+  shield.load(player)
 end
 
 function player.keypressed(key)
   if key==player.jumpKey then
     player.jump()
+  elseif key==player.attackKey then
+    player.attack()
+  elseif key==player.moveDownKey then
+    player.moveDown()
   end
 end
 
@@ -64,6 +75,18 @@ function player.jump()
   if not player.isJumping then
     player.isJumping = true
     player.yVel = player.jumpForce
+  end
+end
+
+function player.attack()
+  axe.spawn(player.x,floor-player.y)
+end
+
+function player.moveDown()
+  if not player.isJumping and player.y>0 then
+    player.y = player.y+1
+    player.isJumping = true
+    player.yVel = -20
   end
 end
 
@@ -97,17 +120,40 @@ function player.update(dt)
   end
   if player.isJumping then
     player.yVel = player.yVel + localGravity*dt
-    player.y = player.y + player.yVel*dt
-    if player.y<0 then
-      player.y=0
+    player.y = player.y - player.yVel*dt
+    py = player.y
+    feet = py+player.height
+    pHeight = stage.platformHeight+20
+    if player.y>floor then
+      player.y=floor
       player.isJumping = false
+    elseif player.yVel<0 and feet + player.yVel*dt<=pHeight then
+      if feet>pHeight then
+        local plats = stage.elements[platformId].list
+        for i,v in ipairs(plats) do
+          --if math.abs(center-(v.x+v.width)) < (player.width+v.width)/2 then
+          if inContact(player,v) then
+            player.y = pHeight - player.height
+            player.isJumping = false
+            player.standingOn = v
+          end
+        end
+      end
+    end
+  elseif player.y<floor then --player not jumping
+    local v = player.standingOn
+    --if math.abs(player.x+(player.width-v.width)/2-v.x)>(player.width*0.7+v.width)/2 then
+    if not inContact(player,player.standingOn) then
+      player.isJumping = true
+      player.yVel = -20
     end
   end
+  axe.update(dt)
 end
 
 function player.reset()
   player.x = 0
-  player.y = 0
+  player.y = floor
   player.xVel = 0
   player.yVel = 0
 end
@@ -115,6 +161,19 @@ end
 function player.draw()
   sprite = player.sprites[state]
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
-  love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,floor-player.y,0,0.35,0.35)
-  love.graphics.rectangle("line", player.x,378-player.y, player.width, player.height)
+  love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
+  love.graphics.rectangle("line", player.x,player.y, player.width, player.height)
+  axe.draw()
+  shield.draw()
+end
+
+function inContact(p,v)
+  if p.x<v.x then
+    if p.x+p.width>v.x then
+      return true
+    end
+  elseif p.x<v.x+v.width then
+    return true
+  end
+  return false
 end
