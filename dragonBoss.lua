@@ -1,6 +1,7 @@
 require "dgBossIdleState"
 require "dgFireAtState"
 require "dgArcFireAtState"
+require "contact"
 
 dragonBoss = {}
 
@@ -14,9 +15,9 @@ local state
 function dragonBoss.load(player)
   dragonBoss.target = player
   dragonBoss.states = {}
-  loadState(idleStateId) = dgIdleState
-  loadState(fireAttackStateId) = dgFireAtState
-  loadState(arcFireAttackStateId) = dgArcFireAtState
+  loadState(idleStateId,dgIdleState)
+  loadState(fireAttackStateId,dgFireAtState)
+  loadState(arcFireAttackStateId,dgArcFireAtState)
   changeState(idleStateId)
   dragonBoss.x=0
   dragonBoss.y=0
@@ -34,6 +35,13 @@ end
 function dragonBoss.update(dt)
   state.update(dt)
   animComp.update(dt,animationComponent)
+  dragonBoss.contact()
+end
+
+function dragonBoss.contact()
+  if contact.isInRectContact(target.x,target.y,target.width,dragonBoss.x,dragonBoss.y,dragonBoss.width,dragonBoss.height) then
+    target.reset()
+  end
 end
 
 function changeState(toStateId)
