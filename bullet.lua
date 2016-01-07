@@ -25,9 +25,17 @@ function bullet.randomSpawn()
 end
 
 function bullet.update(dt)
-  local p = player
   for i,v in ipairs(bullet.list) do
     v.x = v.x + bullet.velocity*dt
+  end
+  if player.invTime==0 then
+    bullet.checkContact()
+  end
+end
+
+function bullet.checkContact()
+  local p = player
+  for i,v in ipairs(bullet.list) do
     if(v.x+bullet.width<0) then
       table.remove(bullet.list,i)
       bullet.randomSpawn()
@@ -42,6 +50,8 @@ end
 function bullet.draw(dt)
   for i,v in ipairs(bullet.list) do
     love.graphics.draw(bullet.image,v.x,v.y,0,bullet.sw, bullet.sh)
-    love.graphics.rectangle("line",v.x,v.y,bullet.width,bullet.height)
+    if configuration.debugBoundingBox then
+      love.graphics.rectangle("line",v.x,v.y,bullet.width,bullet.height)
+    end
   end
 end

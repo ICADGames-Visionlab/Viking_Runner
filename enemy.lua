@@ -29,12 +29,15 @@ function enemies.draw()
   for i,v in ipairs(enemies) do
     for j,w in ipairs(v.list) do
       love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,302+w.y,0,1,1)
-      love.graphics.rectangle("line",w.x,302+w.y,72,72)
+      if configuration.debugBoundingBox then
+        love.graphics.rectangle("line",w.x,302+w.y,72,72)
+      end
     end
   end
 end
 
 function enemies.collision(enemy, class, player)
+  if player.invTime>0 then return end
   if(player.x>enemy.x) then compx=class.width else compx=player.width end
   py = player.y
   ey = 302 + enemy.y

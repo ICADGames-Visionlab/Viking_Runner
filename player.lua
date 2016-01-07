@@ -57,6 +57,9 @@ function player.load()
   player.y = floor
   player.x = 0
   player.hasShield = false
+  player.invTime = 0
+  player.invLimit = 2
+  player.blinkTime = 0.1
   axe.load()
   shield.load(player)
 end
@@ -79,7 +82,7 @@ function player.jump()
 end
 
 function player.attack()
-  axe.spawn(player.x,floor-player.y)
+  axe.spawn(player.x,player.y)
 end
 
 function player.moveDown()
@@ -145,24 +148,47 @@ function player.update(dt)
     --if math.abs(player.x+(player.width-v.width)/2-v.x)>(player.width*0.7+v.width)/2 then
     if not inContact(player,player.standingOn) then
       player.isJumping = true
-      player.yVel = -20
+      player.yVel = -40
+    end
+  end
+  if player.invTime>0 then
+    player.invTime = player.invTime - dt
+    if player.invTime < 0 then
+      player.invTime = 0
     end
   end
   axe.update(dt)
 end
 
+function player.gotHit()
+  shield.hit()
+end
+
 function player.reset()
-  player.x = 0
-  player.y = floor
-  player.xVel = 0
-  player.yVel = 0
+  if player.invTime==0 then
+    if shield.exists() then
+      shield.hit()
+    else
+      player.x = 0
+      player.y = floor
+      player.xVel = 0
+      player.yVel = 0
+      shield.equip()
+    end
+    player.invTime = player.invLimit
+  end
 end
 
 function player.draw()
   sprite = player.sprites[state]
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
-  love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
-  love.graphics.rectangle("line", player.x,player.y, player.width, player.height)
+  
+  if player.invTime==0 or math.floor((player.invLimit-player.invTime)/player.blinkTime)%2==1 then
+    love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
+  end
+  if configuration.debugBoundingBox then
+    love.graphics.rectangle("line", player.x,player.y, player.width, player.height)
+  end
   axe.draw()
   shield.draw()
 end

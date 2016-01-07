@@ -1,3 +1,6 @@
+configuration = {}
+configuration.debugBoundingBox = false
+
 function love.conf(t)
 	t.title = "Viking Runner"
 	t.window.width = 1280

@@ -1,18 +1,26 @@
 require "platform"
 stage = {}
+local background = {}
 platformId = 1
 
 function stage.load()
   stage.sprite = love.graphics.newImage("/Assets/Background/test.png")
+  background = {}
+  background.pos = 0
+  --background.image = love.graphics.newImage()
   stage.width = love.graphics.getWidth()
   stage.height = love.graphics.getHeight()
+  background.width = stage.width
+  background.height = stage.height
   stage.scaleX = stage.width / stage.sprite:getWidth()
   stage.scaleY = stage.height / stage.sprite:getHeight()
   stage.velocity = stage.width/3
+  background.velocity = stage.velocity/3
   stage.position = 0;
   stage.elements = {}
   stage.platformHeight = 0.55*stage.height+20
   loadElement(platformId, platform)
+  stage.screen = 1
 end
 
 function loadElement(id, class)
@@ -23,7 +31,12 @@ end
 function stage.update(dt)
   local mov = stage.velocity*dt
   stage.position = stage.position + mov
+  background.pos = background.pos + background.velocity*dt
+  if background.pos >= background.width then
+    background.pos = background.pos - background.width
+  end
   if stage.position >= stage.width then
+    stage.screen = stage.screen+1
     stage.position = stage.position - stage.width
     w = stage.width
     h = stage.height
@@ -44,6 +57,9 @@ end
 
 function stage.draw()
   point = -stage.position
+  backPoint = -background.pos
+  --love.graphics.draw(background.image,backPoint,0)
+  --love.graphics.draw(background.image,backPoint+background.width,0)
   love.graphics.draw(stage.sprite,point,0,0,stage.scaleX,stage.scaleY)
   love.graphics.draw(stage.sprite,point+stage.width,0,0,stage.scaleX,stage.scaleY)
   --love.graphics.draw(stage.sprite,0,0,0,love.graphics.getWidth(),love.graphics.getHeight())
@@ -54,4 +70,5 @@ function stage.draw()
     end
   end
   love.graphics.setColor(255,255,255,255)
+  love.graphics.print(stage.screen,0,0,0,4,4)
 end
