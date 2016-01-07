@@ -9,6 +9,7 @@ function love.load()
   --menu.load()
   audio.load()
   game.load()
+  audio.play(audio.stageMusic)
 end
 
 function love.keypressed(key)

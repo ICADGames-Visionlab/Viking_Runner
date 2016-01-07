@@ -7,10 +7,11 @@ function audio.load()
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
   audio.musicPlaying = nil
   timer = 0
-  audio.pJumpSound = love.audio.newSource("/Assets/Sfx/Pulo.wav")
-  audio.pRunSound = love.audio.newSource("/Assets/Sfx/corrida.mp3")
+  audio.pJumpSound = love.audio.newSource("/Assets/Sfx/Pulo.wav","static")
+  audio.pRunSound = love.audio.newSource("/Assets/Sfx/corrida.mp3","static")
   audio.pRunSound:setLooping(true)
   audio.pAttSound = love.audio.newSource("/Assets/Sfx/Machado.wav")
+  audio.pAttSound:setVolume(0.5)
   --etc
 end
 
@@ -26,14 +27,21 @@ end
 
 function audio.playPlayerJump()
   love.audio.stop(audio.pRunSound)
-  love.audio.play(audio.pJumpSound)
+  audio.playSfx(audio.pJumpSound)
 end
 function audio.playPlayerRun()
   love.audio.stop(audio.pJumpSound)
-  love.audio.play(audio.pRunSound)
+  audio.playSfx(audio.pRunSound)
 end
 function audio.playPlayerAttack()
-  love.audio.play(audio.pAttSound)
+  audio.playSfx(audio.pAttSound)
+end
+
+function audio.playSfx(sfx)
+  if sfx:isPlaying() then
+    love.audio.stop(sfx)
+  end
+  love.audio.play(sfx)
 end
 
 function audio.update(dt)

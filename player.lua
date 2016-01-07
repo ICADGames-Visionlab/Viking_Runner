@@ -106,7 +106,9 @@ function player.jump()
 end
 
 function player.attack()
-  axe.spawn(player.x,player.y)
+  if axe.spawn(player.x,player.y) then
+    audio.playPlayerAttack()
+  end
 end
 
 function player.moveDown()

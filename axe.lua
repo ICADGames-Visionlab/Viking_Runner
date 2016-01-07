@@ -18,7 +18,9 @@ function axe.spawn(x,y)
   local quant = #axe.list
   if quant<axe.limit then
     table.insert(axe.list,{x=x,y=y,rot=0})
+    return true
   end
+  return false
   --[[
   if axe.instance == nil then
     axe.instance = {x=x, y=y, rot=0}
