@@ -55,7 +55,7 @@ end
 
 function axe.draw()
   for i,v in ipairs(axe.list) do
-    love.graphics.draw(axe.image,axe.quad,v.x+36,v.y+36,v.rot,1,1,36,36)
+    love.graphics.draw(axe.image,axe.quad,v.x+axe.width/2,v.y+axe.height/2,v.rot,1,1,axe.width/2,axe.height/2)
     if configuration.debugBoundingBox then
       love.graphics.rectangle("line",v.x,v.y,axe.width,axe.height)
     end

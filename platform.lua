@@ -2,6 +2,7 @@ platform = {}
 
 function platform.load()
   platform.list = {}
+  platform.color = {0,0,0}
 end
 
 function platform.generate(x,y,width,height)

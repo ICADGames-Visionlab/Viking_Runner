@@ -4,7 +4,7 @@ bullet = {}
 
 function bullet.load()
   bullet.image = love.graphics.newImage("/Assets/Enemies/bulletBill.png")
-  bullet.velocity = -love.graphics.getWidth()*0.4
+  bullet.velocity = -love.graphics.getWidth()*0.5
   bullet.list = {}
   bullet.width = 144
   bullet.height = 72

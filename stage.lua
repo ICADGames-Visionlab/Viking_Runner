@@ -1,7 +1,9 @@
 require "platform"
+require "powerup"
 stage = {}
 local background = {}
 platformId = 1
+powerupId = 2
 
 function stage.load()
   stage.sprite = love.graphics.newImage("/Assets/Background/test.png")
@@ -20,6 +22,7 @@ function stage.load()
   stage.elements = {}
   stage.platformHeight = 0.55*stage.height+20
   loadElement(platformId, platform)
+  loadElement(powerupId, powerup)
   stage.screen = 1
 end
 
@@ -44,6 +47,14 @@ function stage.update(dt)
     sh = h*0.05
     platform.generate(w*1.125,stage.platformHeight,sw,sh)
     platform.generate(w*1.625,stage.platformHeight,sw,sh)
+    local n = love.math.random()
+    if n>0.5 then
+      powerup.spawn(w*1.125+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
+      n = n-0.5
+    end
+    if n>0.25 then
+      powerup.spawn(w*1.625+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
+    end
   end
   for i,v in ipairs(stage.elements) do
     for j,w in ipairs(v.list) do
@@ -63,12 +74,12 @@ function stage.draw()
   love.graphics.draw(stage.sprite,point,0,0,stage.scaleX,stage.scaleY)
   love.graphics.draw(stage.sprite,point+stage.width,0,0,stage.scaleX,stage.scaleY)
   --love.graphics.draw(stage.sprite,0,0,0,love.graphics.getWidth(),love.graphics.getHeight())
-  love.graphics.setColor(0,0,0)
   for i,v in ipairs(stage.elements) do
+    love.graphics.setColor(v.color)
     for j,w in ipairs(v.list) do
       love.graphics.rectangle("fill", w.x,w.y,w.width,w.height)
     end
   end
-  love.graphics.setColor(255,255,255,255)
+  love.graphics.setColor(255,255,255)
   love.graphics.print(stage.screen,0,0,0,4,4)
 end

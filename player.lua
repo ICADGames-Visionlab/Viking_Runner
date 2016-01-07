@@ -1,6 +1,7 @@
 require "stage"
 require "axe"
 require "shield"
+require "contact"
 
 player = {}
 local run = 0
@@ -70,6 +71,8 @@ function player.load()
   player.yVel = 0
   player.velForce = 0.4
   player.jumpForce = 650
+  player.jumpRotSpeed = 0.6*2*math.pi
+  player.jumpRot = 0
   player.y = floor
   player.x = 0
   player.hasShield = false
@@ -95,6 +98,7 @@ function player.jump()
     player.isJumping = true
     player.yVel = player.jumpForce
     animComp.restart(player.sprites[jump].comp)
+    player.jumpRot = 0
     state = jump
   end
 end
@@ -114,6 +118,7 @@ function player.fall()
   player.isJumping = true
   player.yVel = -40
   animComp.restart(player.sprites[jump].comp)
+  player.jumpRot = 0
   state = jump
 end
 
@@ -123,6 +128,33 @@ function player.reachFloor()
 end
 
 function player.update(dt)
+  player.processMovement(dt)
+  player.processJump(dt)
+  player.processInvencibility(dt)
+  player.processContact(dt)
+  axe.update(dt)
+end
+
+function player.processContact(dt)
+  local c = stage.elements[powerupId]
+  for i,v in ipairs(c.list) do
+    if contact.isInRectContact(player.x,player.y,player.width,player.height,v.x,v.y,c.width,c.height) then
+      powerup.acquire(i)
+      shield.reset()
+    end
+  end
+end
+
+function player.processInvencibility(dt)
+  if player.invTime>0 then
+    player.invTime = player.invTime - dt
+    if player.invTime < 0 then
+      player.invTime = 0
+    end
+  end
+end
+
+function player.processMovement(dt)
   if love.keyboard.isDown(player.leftKey) then
     player.xVel = 1-player.velForce
   elseif love.keyboard.isDown(player.rightKey) then
@@ -141,17 +173,20 @@ function player.update(dt)
     end
   end
   if state == run then
-  sprite = player.sprites[state]
-  tpf = sprite.time/player.xVel / 10
-  player.timer = player.timer + dt
-  if(player.timer>tpf) then
-    player.timer = player.timer - tpf
-    player.curr_frame = player.curr_frame+1
-    if player.curr_frame > 10 then
-      player.curr_frame = 1
+    sprite = player.sprites[state]
+    tpf = sprite.time/player.xVel / 10
+    player.timer = player.timer + dt
+    if(player.timer>tpf) then
+      player.timer = player.timer - tpf
+      player.curr_frame = player.curr_frame+1
+      if player.curr_frame > 10 then
+        player.curr_frame = 1
+      end
     end
   end
-  end
+end
+
+function player.processJump(dt)
   if player.isJumping then
     player.yVel = player.yVel + localGravity*dt
     player.y = player.y - player.yVel*dt
@@ -181,16 +216,10 @@ function player.update(dt)
       player.fall()
     end
   end
-  if player.invTime>0 then
-    player.invTime = player.invTime - dt
-    if player.invTime < 0 then
-      player.invTime = 0
-    end
-  end
   if player.isJumping then
     animComp.update(dt,player.sprites[jump].comp)
+    player.jumpRot = player.jumpRot + player.jumpRotSpeed*dt
   end
-  axe.update(dt)
 end
 
 function player.gotHit()
@@ -220,7 +249,8 @@ function player.draw()
     if not player.isJumping then
       love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
     else
-      love.graphics.draw(sprite.sheet, sprite.quads[sprite.comp.curr_frame],player.x,player.y,0,player.width/sprite.width,player.width/sprite.width)
+      local s = player.width/sprite.width
+      love.graphics.draw(sprite.sheet, sprite.quads[sprite.comp.curr_frame],player.x,player.y,0,s,s)
     end
   end
   if configuration.debugBoundingBox then
