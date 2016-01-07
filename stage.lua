@@ -8,7 +8,7 @@ powerupId = 2
 function stage.load()
   stage.sprite = love.graphics.newImage("/Assets/Background/test.png")
   background = {}
-  background.pos = 0
+  background.position = 0
   --background.image = love.graphics.newImage()
   stage.width = love.graphics.getWidth()
   stage.height = love.graphics.getHeight()
@@ -31,12 +31,17 @@ function loadElement(id, class)
   class.load()
 end
 
+function stage.prepareBackgrounds(data)
+  background.position = data.back2Pos
+  stage.position = data.back2Pos
+end
+
 function stage.update(dt)
   local mov = stage.velocity*dt
   stage.position = stage.position + mov
-  background.pos = background.pos + background.velocity*dt
-  if background.pos >= background.width then
-    background.pos = background.pos - background.width
+  background.positionition = background.position + background.velocity*dt
+  if background.position >= background.width then
+    background.position = background.position - background.width
   end
   if stage.position >= stage.width then
     stage.screen = stage.screen+1
@@ -68,7 +73,7 @@ end
 
 function stage.draw()
   point = -stage.position
-  backPoint = -background.pos
+  backPoint = -background.position
   --love.graphics.draw(background.image,backPoint,0)
   --love.graphics.draw(background.image,backPoint+background.width,0)
   love.graphics.draw(stage.sprite,point,0,0,stage.scaleX,stage.scaleY)

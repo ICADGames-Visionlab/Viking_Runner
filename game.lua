@@ -16,6 +16,8 @@ end
 function game.keypressed(key)
   player.keypressed(key)
 end
+function game.mousepressed(x,y,button)
+end
 
 function game.update(dt)
   stage.update(dt)
@@ -31,4 +33,8 @@ function game.draw()
   enemies.draw()
   bullet.draw()
   --dialog.drawText(dText)
+end
+
+function game.prepareBackgrounds(data)
+  stage.prepareBackgrounds(data)
 end
