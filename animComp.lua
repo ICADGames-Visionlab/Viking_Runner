@@ -1,7 +1,7 @@
 animComp = {}
 
 function animComp.newAnim(qFrames, animTime)
-  anim = {}
+  local anim = {}
   anim.curr_frame = 1
   anim.time = animTime
   anim.capTime = animTime / qFrames
@@ -18,4 +18,9 @@ function animComp.update(dt, anim)
     if anim.curr_frame > anim.qFrames then anim.curr_frame = 1 end
   end
   return anim.curr_frame
+end
+
+function animComp.restart(anim)
+  anim.curr_frame = 1
+  anim.curr_time = 0
 end

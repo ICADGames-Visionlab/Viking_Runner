@@ -4,6 +4,7 @@ require "shield"
 
 player = {}
 local run = 0
+local jump = 1
 local state = 0
 local localGravity = -1100
 --floor = 378
@@ -11,6 +12,7 @@ floor = 478
 
 function player.load()
   player.runSheet = love.graphics.newImage("/Assets/Character/run.png")
+  player.jumpSheet = love.graphics.newImage("/Assets/Character/jump.png")
   player.sprites = {}
   player.isJumping = false
   aw = player.runSheet:getWidth()
@@ -21,7 +23,6 @@ function player.load()
   player.height = h*0.35
   player.sprites[run] = {}
   player.sprites[run].sheet = player.runSheet
-  player.sprites[run].quads = {}
   player.sprites[run].quads = {
     love.graphics.newQuad(0,0,w,h,aw,ah),
     love.graphics.newQuad(w,23,w,h-23,aw,ah),
@@ -34,6 +35,21 @@ function player.load()
     love.graphics.newQuad(3*w,h,w,h,aw,ah),
     love.graphics.newQuad(4*w,h,w,h,aw,ah)
   }
+  aw = player.jumpSheet:getWidth()
+  ah = player.jumpSheet:getHeight()
+  w = aw/4
+  h = ah/2
+  player.sprites[jump] = {}
+  player.sprites[jump].quads = {}
+  player.sprites[jump].width = w
+  player.sprites[jump].height = h
+  player.sprites[jump].sheet = player.jumpSheet
+  for i=1,8 do
+    local ind = i-1
+    player.sprites[jump].quads[i] = love.graphics.newQuad((ind%4)*w,math.floor(ind/4)*h,w,h,aw,ah)
+  end
+  player.sprites[jump].comp = animComp.newAnim(8,0.6)
+  
   player.jumpKey = " "
   player.rightKey = "right"
   player.leftKey = "left"
@@ -78,6 +94,8 @@ function player.jump()
   if not player.isJumping then
     player.isJumping = true
     player.yVel = player.jumpForce
+    animComp.restart(player.sprites[jump].comp)
+    state = jump
   end
 end
 
@@ -87,10 +105,21 @@ end
 
 function player.moveDown()
   if not player.isJumping and player.y>0 then
-    player.y = player.y+1
-    player.isJumping = true
-    player.yVel = -20
+    player.fall()
   end
+end
+
+function player.fall()
+  player.y = player.y+1
+  player.isJumping = true
+  player.yVel = -40
+  animComp.restart(player.sprites[jump].comp)
+  state = jump
+end
+
+function player.reachFloor()
+  player.isJumping = false
+  state = run
 end
 
 function player.update(dt)
@@ -111,6 +140,7 @@ function player.update(dt)
       player.xVel = 1
     end
   end
+  if state == run then
   sprite = player.sprites[state]
   tpf = sprite.time/player.xVel / 10
   player.timer = player.timer + dt
@@ -121,6 +151,7 @@ function player.update(dt)
       player.curr_frame = 1
     end
   end
+  end
   if player.isJumping then
     player.yVel = player.yVel + localGravity*dt
     player.y = player.y - player.yVel*dt
@@ -129,7 +160,7 @@ function player.update(dt)
     pHeight = stage.platformHeight+20
     if player.y>floor then
       player.y=floor
-      player.isJumping = false
+      player.reachFloor()
     elseif player.yVel<0 and feet + player.yVel*dt<=pHeight then
       if feet>pHeight then
         local plats = stage.elements[platformId].list
@@ -137,8 +168,8 @@ function player.update(dt)
           --if math.abs(center-(v.x+v.width)) < (player.width+v.width)/2 then
           if inContact(player,v) then
             player.y = pHeight - player.height
-            player.isJumping = false
             player.standingOn = v
+            player.reachFloor()
           end
         end
       end
@@ -147,8 +178,7 @@ function player.update(dt)
     local v = player.standingOn
     --if math.abs(player.x+(player.width-v.width)/2-v.x)>(player.width*0.7+v.width)/2 then
     if not inContact(player,player.standingOn) then
-      player.isJumping = true
-      player.yVel = -40
+      player.fall()
     end
   end
   if player.invTime>0 then
@@ -156,6 +186,9 @@ function player.update(dt)
     if player.invTime < 0 then
       player.invTime = 0
     end
+  end
+  if player.isJumping then
+    animComp.update(dt,player.sprites[jump].comp)
   end
   axe.update(dt)
 end
@@ -184,7 +217,11 @@ function player.draw()
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
   
   if player.invTime==0 or math.floor((player.invLimit-player.invTime)/player.blinkTime)%2==1 then
-    love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
+    if not player.isJumping then
+      love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
+    else
+      love.graphics.draw(sprite.sheet, sprite.quads[sprite.comp.curr_frame],player.x,player.y,0,player.width/sprite.width,player.width/sprite.width)
+    end
   end
   if configuration.debugBoundingBox then
     love.graphics.rectangle("line", player.x,player.y, player.width, player.height)
