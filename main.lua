@@ -1,29 +1,22 @@
-require "player"
-require "enemy"
 require "conf"
-require "bullet"
+require "menu"
+require "game"
+
+local state = game
 
 function love.load()
-  stage.load()
-  player.load()
-  enemies.load()
-  bullet.load()
+  --menu.load()
+  game.load()
 end
 
 function love.keypressed(key)
-  player.keypressed(key)
+  state.keypressed(key)
 end
 
 function love.update(dt)
-  stage.update(dt)
-  player.update(dt)
-  enemies.update(dt)
-  bullet.update(dt)
+  state.update(dt)
 end
 
 function love.draw()
-  stage.draw()
-  player.draw()
-  enemies.draw()
-  bullet.draw()
+  state.draw()
 end
