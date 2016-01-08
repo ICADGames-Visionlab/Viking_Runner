@@ -21,6 +21,7 @@ end
 
 function powerup.acquire(i)
   table.remove(powerup.list,i)
+  audio.playPowerup()
 end
 
 function powerup.draw()

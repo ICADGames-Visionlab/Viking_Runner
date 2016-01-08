@@ -12,11 +12,13 @@ function dragon.load()
   for i=1, dragon.qFrame do
     dragon.quads[i] = love.graphics.newQuad((i-1)*72,0,72,72,w,h)
   end
-  dragon.width = 72
-  dragon.height = 72
+  dragon.width = 90
+  dragon.height = 90
+  dragon.sw = dragon.width/72
+  dragon.sh = dragon.height/72
   dragon.swapTime = 1.5
   dragon.moveTime = 0.5
-  dragon.yDist = 200
+  dragon.yDist = 180
   dragon.speedY = dragon.yDist/dragon.moveTime
   dragon.speedX = love.graphics.getWidth()/5
 end
@@ -51,4 +53,5 @@ end
 
 function dragon.replace(v)
   v.x = love.graphics.getWidth()
+  audio.playDragonDeath()
 end

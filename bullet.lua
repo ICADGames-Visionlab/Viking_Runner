@@ -21,6 +21,7 @@ function bullet.randomSpawn()
   bulletPos = randomNumber>0.5 and 0 or 1
   rnd = 302 + 200*bulletPos
   table.insert(bullet.list, {x=love.graphics.getWidth(),y=rnd})
+  audio.playBullet()
 end
 
 function bullet.update(dt)

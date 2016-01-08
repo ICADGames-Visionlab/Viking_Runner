@@ -47,7 +47,7 @@ end
 function axe.checkContact(ind,a)
   for i,v in ipairs(enemies) do
     for j,w in ipairs(v.list) do
-      if contact.isInRectContact(a.x,a.y,axe.width,axe.height,w.x,302+w.y,v.width,v.height) then
+      if contact.isInRectContact(a.x,a.y,axe.width,axe.height,w.x,290+w.y,v.width,v.height) then
         axe.remove(ind)
         v.replace(w)
       end

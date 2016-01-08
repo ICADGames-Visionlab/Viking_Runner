@@ -42,6 +42,7 @@ end
 function menu.mousepressed(x,y,button)
   if not menu.animating and contains(menu.playButton,x,y) then
     menu.playGame()
+    audio.playMenuStart()
   end
 end
 

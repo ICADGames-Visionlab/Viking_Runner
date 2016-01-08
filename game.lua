@@ -17,7 +17,7 @@ function game.load()
 end
 
 function game.keypressed(key)
-  if not game.startTime>0 then
+  if not(game.startTime>0) then
     player.keypressed(key)
   end
 end

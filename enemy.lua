@@ -28,9 +28,9 @@ end
 function enemies.draw()
   for i,v in ipairs(enemies) do
     for j,w in ipairs(v.list) do
-      love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,302+w.y,0,1,1)
+      love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,302+w.y,0,v.sw,v.sh)
       if configuration.debugBoundingBox then
-        love.graphics.rectangle("line",w.x,302+w.y,72,72)
+        love.graphics.rectangle("line",w.x,290+w.y,w.width,w.height)
       end
     end
   end
@@ -40,7 +40,7 @@ function enemies.collision(enemy, class, player)
   if player.invTime>0 then return end
   if(player.x>enemy.x) then compx=class.width else compx=player.width end
   py = player.y
-  ey = 302 + enemy.y
+  ey = 290 + enemy.y
   if(py>ey) then compy=class.height else compy=player.height end
 	if (math.abs(player.x - enemy.x)<= compx and
 	math.abs(py - ey)<= compy) then--and player.invTime==0 then

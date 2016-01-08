@@ -9,11 +9,18 @@ function audio.load()
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
   audio.musicPlaying = nil
   timer = 0
-  audio.pJumpSound = love.audio.newSource("/Assets/Sfx/Pulo.wav","static")
   audio.pRunSound = love.audio.newSource("/Assets/Sfx/corrida.mp3","static")
-  audio.pRunSound:setLooping(true)
+  audio.pJumpSound = love.audio.newSource("/Assets/Sfx/Pulo2.wav","static")
   audio.pAttSound = love.audio.newSource("/Assets/Sfx/Machado.wav")
-  audio.pAttSound:setVolume(0.5)
+  audio.pAttSound:setVolume(0.3)
+  audio.bulletSound = love.audio.newSource("/Assets/Sfx/Projetil.wav")
+  audio.bulletSound:setVolume(0.3)
+  audio.menuStartSound = love.audio.newSource("/Assets/Sfx/Select.wav")
+  audio.menuStartSound:setVolume(0.5)
+  audio.dragonDeathSound = love.audio.newSource("/Assets/Sfx/Dragonite.mp3")
+  audio.dragonDeathSound:setVolume(1)
+  audio.powerupSound = love.audio.newSource("/Assets/Sfx/Powerup2.wav")
+  audio.powerupSound:setVolume(0.5)
   --etc
 end
 
@@ -34,10 +41,22 @@ end
 function audio.playPlayerRun()
   love.audio.stop(audio.pJumpSound)
   return
-  audio.playSfx(audio.pRunSound)
+  --audio.playSfx(audio.pRunSound)
 end
 function audio.playPlayerAttack()
   audio.playSfx(audio.pAttSound)
+end
+function audio.playBullet()
+  audio.playSfx(audio.bulletSound)
+end
+function audio.playMenuStart()
+  audio.playSfx(audio.menuStartSound)
+end
+function audio.playDragonDeath()
+  audio.playSfx(audio.dragonDeathSound)
+end
+function audio.playPowerup()
+  audio.playSfx(audio.powerupSound)
 end
 
 function audio.playSfx(sfx)

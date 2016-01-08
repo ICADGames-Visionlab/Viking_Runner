@@ -25,6 +25,8 @@ function dragonBoss.load(player)
   dragonBoss.height = 100
   dragonBoss.scaleW = 1
   dragonBoss.scaleH = 1
+  dragonBoss.life = 30
+  dragonBoxx.maxLife = 30
 end
 
 function loadState(id,class)
@@ -50,6 +52,9 @@ function changeState(toStateId)
 end
 
 function dragonBoss.draw()
+  love.graphics.setColor(255,50,50)
+  love.graphics.rectangle("fill",50,20,(love.graphics.getWidth()-100)*dragonBoss.life/dragonBoss.maxLife,60)
+  love.graphics.setColor(255,255,255)
   love.graphics.draw(state.sheet,state.quads[animationComponent.curr_frame],dragonBoss.x,dragonBoss.y)
 end
 
