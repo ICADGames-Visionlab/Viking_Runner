@@ -4,7 +4,8 @@ switchMusic = true
 
 function audio.load()
   --audio.stageMusic = love.audio.newSource("/Assets/Music/God Hand - Rock a Bay.mp3")
-  audio.stageMusic = love.audio.newSource("/Assets/Music/Sonic - DX.mp3")
+  --audio.stageMusic = love.audio.newSource("/Assets/Music/Sonic - DX.mp3")
+  audio.stageMusic = love.audio.newSource("/Assets/Music/VRFASE2.ogg")
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
   audio.musicPlaying = nil
   timer = 0
@@ -32,6 +33,7 @@ function audio.playPlayerJump()
 end
 function audio.playPlayerRun()
   love.audio.stop(audio.pJumpSound)
+  return
   audio.playSfx(audio.pRunSound)
 end
 function audio.playPlayerAttack()

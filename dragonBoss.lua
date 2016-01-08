@@ -52,3 +52,6 @@ end
 function dragonBoss.draw()
   love.graphics.draw(state.sheet,state.quads[animationComponent.curr_frame],dragonBoss.x,dragonBoss.y)
 end
+
+function dragonBoss.endState()
+end

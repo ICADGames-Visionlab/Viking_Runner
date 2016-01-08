@@ -10,10 +10,17 @@ function menu.load()
   local img = love.graphics.newImage("/Assets/play.png")
   local w = img:getWidth()
   local h = img:getHeight()
-  menu.playButton = {image=img,x=(love.graphics.getWidth()-w)/2,y=(love.graphics.getHeight()-h)/2,width=img:getWidth(),height=img:getHeight()}
+  menu.playButton = {image=img,x=(love.graphics.getWidth()-w)/2,y=(love.graphics.getHeight()-h)/2+100,width=w,height=h}
   menu.animating = false
   menu.alpha = 255
   menu.alphaVel = 160
+  menu.fadeOutTime = 1
+  
+  
+  img = love.graphics.newImage("/Assets/Background/driftwood_menu.png")
+  w = img:getWidth()
+  h = img:getHeight()
+  menu.placa = {image=img,x=(love.graphics.getWidth()-w)/2,y=0,width=w,height=h}
 end
 
 function loadBackgrounds(strings)
@@ -50,7 +57,8 @@ function menu.update(dt)
     end
   end
   if menu.animating then
-    menu.alpha = menu.alpha - menu.alphaVel*dt
+    menu.alpha = menu.alpha - 255/menu.fadeOutTime*dt
+    menu.placa.y = menu.placa.y - menu.placa.height/menu.fadeOutTime*dt
     if menu.alpha<0 then
       data = {back1Pos=menu.backgrounds[1].x,back2Pos=menu.backgrounds[2].x}
       love.startGame(data)
@@ -71,6 +79,8 @@ function menu.draw()
   --love.graphics.rectangle("fill",v.x,v.y,v.width,v.height)
   love.graphics.draw(v.image,v.x,v.y)
   love.graphics.setColor(255,255,255)
+  v=menu.placa
+  love.graphics.draw(v.image,v.x,v.y)
 end
 
 function contains(button,x,y)
