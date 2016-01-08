@@ -19,11 +19,10 @@ function dragon.load()
   dragon.yDist = 200
   dragon.speedY = dragon.yDist/dragon.moveTime
   dragon.speedX = love.graphics.getWidth()/5
-  dragon.spawn()
 end
 
 function dragon.spawn()
-  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()-dragon.width})
+  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width})
 end
   
 function dragon.update(dt)

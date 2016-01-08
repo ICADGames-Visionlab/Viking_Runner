@@ -4,7 +4,7 @@ require "shield"
 require "contact"
 
 player = {}
-local run = 0
+run = 0
 local jump = 1
 local state = 0
 local localGravity = -1100
@@ -81,7 +81,6 @@ function player.load()
   player.blinkTime = 0.1
   axe.load()
   shield.load(player)
-  audio.playPlayerRun()
 end
 
 function player.keypressed(key)

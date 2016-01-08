@@ -6,8 +6,9 @@ platformId = 1
 powerupId = 2
 
 function stage.load()
-  stage.sprite = love.graphics.newImage("/Assets/Background/test.png")
+  stage.sprite = love.graphics.newImage("/Assets/Background/primeiro_plano.png")
   background = {}
+  background.image = love.graphics.newImage("/Assets/Background/segundo_plano.png")
   background.position = 0
   --background.image = love.graphics.newImage()
   stage.width = love.graphics.getWidth()
@@ -17,7 +18,7 @@ function stage.load()
   stage.scaleX = stage.width / stage.sprite:getWidth()
   stage.scaleY = stage.height / stage.sprite:getHeight()
   stage.velocity = stage.width/3
-  background.velocity = stage.velocity/3
+  background.velocity = stage.velocity/2
   stage.position = 0;
   stage.elements = {}
   stage.platformHeight = 0.55*stage.height+20
@@ -32,14 +33,20 @@ function loadElement(id, class)
 end
 
 function stage.prepareBackgrounds(data)
-  background.position = data.back2Pos
+  background.position = data.back1Pos
   stage.position = data.back2Pos
+  audio.playPlayerRun()
+end
+
+function stage.start()
+  bullet.randomSpawn()
+  dragon.spawn()
 end
 
 function stage.update(dt)
   local mov = stage.velocity*dt
   stage.position = stage.position + mov
-  background.positionition = background.position + background.velocity*dt
+  background.position = background.position + background.velocity*dt
   if background.position >= background.width then
     background.position = background.position - background.width
   end
@@ -72,10 +79,10 @@ function stage.update(dt)
 end
 
 function stage.draw()
-  point = -stage.position
-  backPoint = -background.position
-  --love.graphics.draw(background.image,backPoint,0)
-  --love.graphics.draw(background.image,backPoint+background.width,0)
+  local point = -stage.position
+  local backPoint = -background.position
+  love.graphics.draw(background.image,backPoint,0)
+  love.graphics.draw(background.image,backPoint+background.width,0)
   love.graphics.draw(stage.sprite,point,0,0,stage.scaleX,stage.scaleY)
   love.graphics.draw(stage.sprite,point+stage.width,0,0,stage.scaleX,stage.scaleY)
   --love.graphics.draw(stage.sprite,0,0,0,love.graphics.getWidth(),love.graphics.getHeight())

@@ -8,7 +8,6 @@ function bullet.load()
   bullet.list = {}
   bullet.width = 144
   bullet.height = 72
-  bullet.randomSpawn()
   
   originalWidth = bullet.image:getWidth()
   originalHeight = bullet.image:getHeight()

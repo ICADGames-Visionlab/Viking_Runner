@@ -3,10 +3,10 @@ require "audio"
 require "menu"
 require "game"
 
-local state = game
+local state = menu
 
 function love.load()
-  --menu.load()
+  menu.load()
   audio.load()
   game.load()
   audio.play(audio.stageMusic)

@@ -3,7 +3,8 @@ time = 10
 switchMusic = true
 
 function audio.load()
-  audio.stageMusic = love.audio.newSource("/Assets/Music/God Hand - Rock a Bay.mp3")
+  --audio.stageMusic = love.audio.newSource("/Assets/Music/God Hand - Rock a Bay.mp3")
+  audio.stageMusic = love.audio.newSource("/Assets/Music/Sonic - DX.mp3")
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
   audio.musicPlaying = nil
   timer = 0
