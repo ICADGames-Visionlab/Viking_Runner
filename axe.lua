@@ -2,14 +2,16 @@ require "contact"
 
 axe = {}
 
-function axe.load()
-  axe.image = love.graphics.newImage("/Assets/Enemies/mapleDragon.png")
-  axe.width = 72
-  axe.height = 72
-  axe.quad = love.graphics.newQuad(0,0,axe.width,axe.height,axe.image:getWidth(),axe.image:getHeight())
+function axe.load(scale)
+  axe.image = love.graphics.newImage("/Assets/Character/axe.png")
+  axe.s = scale*1.2--*60/72
+  axe.width = axe.s*72
+  axe.height = axe.s*72
+  
+  axe.quad = love.graphics.newQuad(0,0,72,72,axe.image:getWidth(),axe.image:getHeight())
   --axe.instance = nil
   axe.speed = love.graphics.getWidth()*0.6
-  axe.rotSpeed = math.pi
+  axe.rotSpeed = -math.pi*3/2
   axe.limit = 1
   axe.list = {}
 end
@@ -17,7 +19,7 @@ end
 function axe.spawn(x,y)
   local quant = #axe.list
   if quant<axe.limit then
-    table.insert(axe.list,{x=x,y=y,rot=0})
+    table.insert(axe.list,{x=x,y=y,rot=math.pi/2})
     return true
   end
   return false
@@ -57,7 +59,7 @@ end
 
 function axe.draw()
   for i,v in ipairs(axe.list) do
-    love.graphics.draw(axe.image,axe.quad,v.x+axe.width/2,v.y+axe.height/2,v.rot,1,1,axe.width/2,axe.height/2)
+    love.graphics.draw(axe.image,axe.quad,v.x+axe.width/2,v.y+axe.height/2,v.rot,axe.s,axe.s,axe.width/2,axe.height/2)
     if configuration.debugBoundingBox then
       love.graphics.rectangle("line",v.x,v.y,axe.width,axe.height)
     end

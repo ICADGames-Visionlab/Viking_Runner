@@ -41,6 +41,7 @@ function bullet.checkContact()
       bullet.randomSpawn()
     elseif contact.isInRectContact(p.x,p.y,p.width,p.height,v.x,v.y,bullet.width,bullet.height) then
       player.reset()
+      animations.createSplash(v.x,v.y+bullet.height/2,color.red)
       table.remove(bullet.list,i)
       bullet.randomSpawn()
     end

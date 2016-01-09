@@ -30,7 +30,7 @@ function enemies.draw()
     for j,w in ipairs(v.list) do
       love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,302+w.y,0,v.sw,v.sh)
       if configuration.debugBoundingBox then
-        love.graphics.rectangle("line",w.x,290+w.y,w.width,w.height)
+        love.graphics.rectangle("line",w.x,290+w.y,v.width,v.height)
       end
     end
   end

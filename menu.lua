@@ -1,4 +1,7 @@
 menu = {}
+local loadBackgrounds, loadBackground, contains
+local play=1
+local controls=2
 
 function menu.load()
   menu.backgrounds = loadBackgrounds({"segundo_plano.png","primeiro_plano.png"})
@@ -7,20 +10,36 @@ function menu.load()
   --menu.backgrounds[2].speed = w/3
   menu.backgrounds[1].speed = w/4
   menu.backgrounds[2].speed = w/2
-  local img = love.graphics.newImage("/Assets/play.png")
-  local w = img:getWidth()
-  local h = img:getHeight()
-  menu.playButton = {image=img,x=(love.graphics.getWidth()-w)/2,y=(love.graphics.getHeight()-h)/2+100,width=w,height=h}
   menu.animating = false
   menu.alpha = 255
   menu.alphaVel = 160
   menu.fadeOutTime = 1
-  
-  
-  img = love.graphics.newImage("/Assets/Background/driftwood_menu.png")
-  w = img:getWidth()
-  h = img:getHeight()
-  menu.placa = {image=img,x=(love.graphics.getWidth()-w)/2,y=0,width=w,height=h}
+  local img = love.graphics.newImage("/Assets/Tela_Intro/Placa_Intro.png")
+  local bHeight = menu.backgrounds[1].height
+  local h = 0.6944*bHeight
+  local s = h/img:getHeight()
+  local w = s*img:getWidth()
+  menu.placa = {image=img,x=(love.graphics.getWidth()-w)/2,y=0,width=w,height=h,scale=s}
+  img = love.graphics.newImage("/Assets/Tela_Intro/Start_Game.png")
+  h = 240/3004*bHeight
+  s = h/img:getHeight()
+  w = s*img:getWidth()
+  menu.buttons = {}
+  table.insert(menu.buttons,{image=img,x=(love.graphics.getWidth()-w)/2,y=0.7034*bHeight,width=w,height=h,s=s})
+  img = love.graphics.newImage("/Assets/Tela_Intro/Controls.png")
+  w = s*img:getWidth()
+  table.insert(menu.buttons,{image=img,x=(love.graphics.getWidth()-w)/2,y=2442/3004*bHeight,width=w,height=h,s=s})
+  img = love.graphics.newImage("/Assets/Tela_Intro/Axe_Selection.png")
+  menu.selector = {dist=70*s,image=img,width=s*img:getWidth(),height=s*img:getHeight(),s=s}
+  putSelector(play)
+end
+
+function putSelector(ind)
+  local v = menu.selector
+  local b = menu.buttons[ind]
+  v.ind=ind
+  v.x=b.x-v.dist-v.width
+  v.y=b.y+(b.height-v.height)/2
 end
 
 function loadBackgrounds(strings)
@@ -37,12 +56,33 @@ function loadBackground(string)
 end
 
 function menu.keypressed(key)
+  if key=="down" then
+    putSelector(menu.selector.ind%#menu.buttons+1)
+  elseif key=="up" then
+    local q = #menu.buttons
+    putSelector((menu.selector.ind-2+q)%q+1)
+  elseif key=="return" then
+    didEnter()
+  end
+end
+
+function didEnter()
+  local v = menu.selector.ind
+  if v==play then
+    menu.playGame()
+  elseif v==controls then
+    
+  end
 end
 
 function menu.mousepressed(x,y,button)
-  if not menu.animating and contains(menu.playButton,x,y) then
-    menu.playGame()
-    audio.playMenuStart()
+  if not menu.animating then
+    for i,v in ipairs(menu.buttons) do
+      if contains(v,x,y) then
+        menu.playGame()
+        audio.playMenuStart()
+      end
+    end
   end
 end
 
@@ -74,14 +114,16 @@ function menu.draw()
     love.graphics.draw(v.image,p,v.y,0,v.s,v.s)
     love.graphics.draw(v.image,p+v.width,v.y,0,v.s,v.s)
   end
+  local v=menu.placa
+  love.graphics.draw(v.image,v.x,v.y,0,v.s,v.s)
   --Draw buttons (can be animated)
   love.graphics.setColor(255,255,255,menu.alpha)
-  local v=menu.playButton
-  --love.graphics.rectangle("fill",v.x,v.y,v.width,v.height)
-  love.graphics.draw(v.image,v.x,v.y)
+  for i,v in ipairs(menu.buttons) do
+    love.graphics.draw(v.image,v.x,v.y,0,v.s,v.s)
+  end
+  v = menu.selector
+  love.graphics.draw(v.image,v.x,v.y,0,v.s,v.s)
   love.graphics.setColor(255,255,255)
-  v=menu.placa
-  love.graphics.draw(v.image,v.x,v.y)
 end
 
 function contains(button,x,y)

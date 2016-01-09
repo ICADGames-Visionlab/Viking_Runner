@@ -52,6 +52,7 @@ function dragon.update(dt)
 end
 
 function dragon.replace(v)
+  animations.createSplash(v.x+dragon.width/2,302+v.y+dragon.height/2)
   v.x = love.graphics.getWidth()
   audio.playDragonDeath()
 end

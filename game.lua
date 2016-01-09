@@ -2,6 +2,7 @@ require "stage"
 require "player"
 require "enemy"
 require "bullet"
+require "animations"
 
 game = {}
 
@@ -13,7 +14,8 @@ function game.load()
   --dialog.load()
   --dText = dialog.newDialogText("Hey man, come right here\nim gonna punch you in the face",0,0)
   game.startTime = 2
-  game.startAnim = animComp.newAnim(10,player.sprites[run].time)
+  game.startAnim = animComp.newAnim(12,player.sprites[run].time)
+  animations.load()
 end
 
 function game.keypressed(key)
@@ -31,6 +33,7 @@ function game.update(dt)
   enemies.update(dt)
   bullet.update(dt)
   --dialog.updateText(dt,dText)
+  animations.update(dt)
 end
 
 function game.draw()
@@ -39,6 +42,7 @@ function game.draw()
   enemies.draw()
   bullet.draw()
   --dialog.drawText(dText)
+  animations.draw()
 end
 
 function game.startUpdate(dt)
@@ -47,13 +51,14 @@ function game.startUpdate(dt)
     game.startTime = 0
     game.start()
   end
-  player.x = -player.width+(1-game.startTime/2)*2*player.width
+  player.x = -player.imgWidth+(1-game.startTime/2)*2*player.imgHeight
   animComp.update(dt,game.startAnim)
 end
 
 function game.startDraw()
   local sprite = player.sprites[run]
-  love.graphics.draw(sprite.sheet, sprite.quads[game.startAnim.curr_frame], player.x, player.y, 0, 0.35, 0.35)
+  love.graphics.draw(sprite.sheet, sprite.quads[game.startAnim.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
+  shield.draw()
 end
 
 function game.prepareBackgrounds(data)

@@ -1,9 +1,9 @@
 shield = {}
 
 function shield.load(player)
-  --local image = love.graphics.newImage()
-  --shield.imgs = {image,image.image}
-  shield.colors = {{255,0,0,200},{255,255,0,200},{0,255,0,200}}
+  local img = love.graphics.newImage("/Assets/Character/shield.png")
+  shield.img=img
+  shield.colors = {{255,0,0,190},{255,255,0,190},{0,255,0,190}}
   shield.reset()
   shield.owner = player
   shield.x = player.width*0.6
@@ -28,7 +28,10 @@ function shield.draw(px,py)
   if shield.life>0 then
     local p = shield.owner
     love.graphics.setColor(shield.colors[shield.life])
-    love.graphics.rectangle("fill",p.x+shield.x,p.y+shield.y,shield.width,shield.height)
+    --if not p.isJumping then
+      love.graphics.draw(shield.img,p.x,p.y,0,p.scale,p.scale,p.offset.x,p.offset.y)
+    --end
+    --love.graphics.rectangle("fill",p.x+shield.x,p.y+shield.y,shield.width,shield.height)
     love.graphics.setColor(255,255,255)
   end
 end

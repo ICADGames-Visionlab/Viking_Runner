@@ -1,29 +1,36 @@
 require "stage"
 require "axe"
 require "shield"
-require "contact"
+require "contact" 
 
 player = {}
 run = 0
 local jump = 1
 local state = 0
 local localGravity = -1100
---floor = 378
-floor = 478
+floor = 615
 
 function player.load()
-  player.runSheet = love.graphics.newImage("/Assets/Character/run.png")
+  player.runSheet = love.graphics.newImage("/Assets/Character/VikingRunningSheet.png")
   player.jumpSheet = love.graphics.newImage("/Assets/Character/jump.png")
   player.sprites = {}
   player.isJumping = false
   aw = player.runSheet:getWidth()
   ah = player.runSheet:getHeight()
-  w = aw/5
-  h = ah/2
-  player.width = w*0.35
-  player.height = h*0.35
+  --w = aw/5
+  --h = ah/2
+  w = aw/12
+  h = ah
+  player.scale = 0.7
+  player.imgWidth = w*player.scale
+  player.imgHeight = h*player.scale
+  player.width = player.scale*81--85*player.scale
+  player.height = player.scale*153--152*player.scale
   player.sprites[run] = {}
   player.sprites[run].sheet = player.runSheet
+  player.sprites[run].quads={}
+  player.offset = {x=65,y=33}
+  --[[
   player.sprites[run].quads = {
     love.graphics.newQuad(0,0,w,h,aw,ah),
     love.graphics.newQuad(w,23,w,h-23,aw,ah),
@@ -36,6 +43,10 @@ function player.load()
     love.graphics.newQuad(3*w,h,w,h,aw,ah),
     love.graphics.newQuad(4*w,h,w,h,aw,ah)
   }
+  ]]
+  for i=0,11 do
+    table.insert(player.sprites[run].quads,love.graphics.newQuad(i*w,0,w,h,aw,ah))
+  end
   aw = player.jumpSheet:getWidth()
   ah = player.jumpSheet:getHeight()
   w = aw/4
@@ -63,24 +74,27 @@ function player.load()
     --player.sprites[run].quads[i] = love.graphics.newQuad(0,0,500,500)
     --love.graphics.newQuad(
   --end
-  player.sprites[run].time = 1--1.5/1.4
+  player.sprites[run].time = 0.7--1.5/1.4
   player.curr_frame = 1;
   player.timer = 0
   player.velocity = stage.velocity;
   player.xVel = 0
   player.yVel = 0
   player.velForce = 0.4
-  player.jumpForce = 650
+  player.jumpForce = 700
   player.jumpRotSpeed = 0.6*2*math.pi
   player.jumpRot = 0
-  player.y = floor
+  player.y = floor-player.height
   player.x = 0
   player.hasShield = false
   player.invTime = 0
   player.invLimit = 2
   player.blinkTime = 0.1
-  axe.load()
+  axe.load(player.scale)
   shield.load(player)
+  --45,124
+  player.axeLoc = {x=(-player.offset.x+8)*player.scale,y=(-player.offset.y+80)*player.scale}
+  --animations.load()
 end
 
 function player.keypressed(key)
@@ -105,7 +119,7 @@ function player.jump()
 end
 
 function player.attack()
-  if axe.spawn(player.x,player.y) then
+  if axe.spawn(player.x+player.axeLoc.x,player.y+player.axeLoc.y) then
     audio.playPlayerAttack()
   end
 end
@@ -137,6 +151,7 @@ function player.update(dt)
   player.processInvencibility(dt)
   player.processContact(dt)
   axe.update(dt)
+  --animations.update(dt)
 end
 
 function player.processContact(dt)
@@ -183,7 +198,7 @@ function player.processMovement(dt)
     if(player.timer>tpf) then
       player.timer = player.timer - tpf
       player.curr_frame = player.curr_frame+1
-      if player.curr_frame > 10 then
+      if player.curr_frame > 12 then
         player.curr_frame = 1
       end
     end
@@ -196,9 +211,9 @@ function player.processJump(dt)
     player.y = player.y - player.yVel*dt
     py = player.y
     feet = py+player.height
-    pHeight = stage.platformHeight+20
-    if player.y>floor then
-      player.y=floor
+    pHeight = stage.platformHeight
+    if player.y+player.height>floor then
+      player.y=floor-player.height
       player.reachFloor()
     elseif player.yVel<0 and feet + player.yVel*dt<=pHeight then
       if feet>pHeight then
@@ -213,7 +228,7 @@ function player.processJump(dt)
         end
       end
     end
-  elseif player.y<floor then --player not jumping
+  elseif player.y+player.height<floor then --player not jumping
     local v = player.standingOn
     --if math.abs(player.x+(player.width-v.width)/2-v.x)>(player.width*0.7+v.width)/2 then
     if not inContact(player,player.standingOn) then
@@ -235,8 +250,9 @@ function player.reset()
     if shield.exists() then
       shield.hit()
     else
+      animations.createSplash(player.x,player.y)
       player.x = 0
-      player.y = floor
+      player.y = floor-player.height
       player.xVel = 0
       player.yVel = 0
       shield.equip()
@@ -250,18 +266,23 @@ function player.draw()
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
   
   if player.invTime==0 or math.floor((player.invLimit-player.invTime)/player.blinkTime)%2==1 then
+    --[[
     if not player.isJumping then
-      love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,0.35,0.35)
+      love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
     else
       local s = player.width/sprite.width
       love.graphics.draw(sprite.sheet, sprite.quads[sprite.comp.curr_frame],player.x,player.y,0,s,s)
     end
+    ]]
+    sprite = player.sprites[run]
+    love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
+    shield.draw()
   end
   if configuration.debugBoundingBox then
     love.graphics.rectangle("line", player.x,player.y, player.width, player.height)
   end
   axe.draw()
-  shield.draw()
+  --animations.draw()
 end
 
 function inContact(p,v)
