@@ -18,7 +18,7 @@ function stage.load()
   stage.scaleX = stage.width / stage.sprite:getWidth()
   stage.scaleY = stage.height / stage.sprite:getHeight()
   stage.velocity = stage.width/3
-  background.velocity = stage.velocity/2
+  background.velocity = stage.velocity/3
   stage.position = 0;
   stage.elements = {}
   stage.platformHeight = 0.55*stage.height+20

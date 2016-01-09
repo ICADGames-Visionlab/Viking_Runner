@@ -8,8 +8,8 @@ function menu.load()
   local w = love.graphics.getWidth()
   --menu.backgrounds[1].speed = w/9
   --menu.backgrounds[2].speed = w/3
-  menu.backgrounds[1].speed = w/4
-  menu.backgrounds[2].speed = w/2
+  menu.backgrounds[1].speed = w/12
+  menu.backgrounds[2].speed = w/4
   menu.animating = false
   menu.alpha = 255
   menu.alphaVel = 160
