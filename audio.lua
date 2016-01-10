@@ -5,7 +5,7 @@ switchMusic = true
 function audio.load()
   --audio.stageMusic = love.audio.newSource("/Assets/Music/God Hand - Rock a Bay.mp3")
   --audio.stageMusic = love.audio.newSource("/Assets/Music/Sonic - DX.mp3")
-  audio.stageMusic = love.audio.newSource("/Assets/Music/VRFASE2.ogg")
+  audio.stageMusic = love.audio.newSource("/Assets/Music/VRFASE22.ogg")
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
   audio.musicPlaying = nil
   timer = 0
@@ -21,6 +21,11 @@ function audio.load()
   audio.dragonDeathSound:setVolume(1)
   audio.powerupSound = love.audio.newSource("/Assets/Sfx/Powerup2.wav")
   audio.powerupSound:setVolume(0.5)
+  audio.fireloopSound = love.audio.newSource("/Assets/Sfx/fireloop.wav")
+  audio.fireloopSound:setVolume(0.3)
+  audio.fireloopSound:setLooping(true)
+  audio.shieldSound = love.audio.newSource("/Assets/Sfx/shieldBreak.wav")
+  audio.shieldSound:setVolume(0.4)
   --etc
 end
 
@@ -48,6 +53,7 @@ function audio.playPlayerAttack()
 end
 function audio.playBullet()
   audio.playSfx(audio.bulletSound)
+  audio.playFire()
 end
 function audio.playMenuStart()
   audio.playSfx(audio.menuStartSound)
@@ -57,6 +63,15 @@ function audio.playDragonDeath()
 end
 function audio.playPowerup()
   audio.playSfx(audio.powerupSound)
+end
+function audio.playFire()
+  audio.playSfx(audio.fireloopSound)
+end
+function audio.stopFire()
+  love.audio.stop(audio.fireloopSound)
+end
+function audio.playShield()
+  audio.playSfx(audio.shieldSound)
 end
 
 function audio.playSfx(sfx)

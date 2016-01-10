@@ -31,6 +31,10 @@ function animations.update(dt)
   end
 end
 
+function animations.quit()
+  table.removeAll(animations.list)
+end
+
 function animations.createSplash(x,y,col)
   local c
   if col == nil then c=color.clear else c=col end
@@ -44,3 +48,27 @@ function animations.draw()
   end
   love.graphics.setColor(color.clear)
 end
+
+function animations.loadQuads(quant,nCol,each_w,each_h,sprite_width,sprite_height)
+  local quads={}
+  for i=0,quant-1 do
+    table.insert(quads,love.graphics.newQuad(i%nCol*each_w,math.floor(i/nCol)*each_h,each_w,each_h,sprite_width,sprite_height))
+  end
+  return quads
+end
+
+
+  --[[
+  player.sprites[run].quads = {
+    love.graphics.newQuad(0,0,w,h,aw,ah),
+    love.graphics.newQuad(w,23,w,h-23,aw,ah),
+    love.graphics.newQuad(2*w,34,w,h-34,aw,ah),
+    love.graphics.newQuad(3*w,43,w,h-43,aw,ah),
+    love.graphics.newQuad(4*w,50,w,h-50,aw,ah),
+    love.graphics.newQuad(0,h,w,h,aw,ah),
+    love.graphics.newQuad(w,h,w,h,aw,ah),
+    love.graphics.newQuad(2*w,h,w,h,aw,ah),
+    love.graphics.newQuad(3*w,h,w,h,aw,ah),
+    love.graphics.newQuad(4*w,h,w,h,aw,ah)
+  }
+  ]]

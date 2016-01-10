@@ -1,7 +1,7 @@
 require "platform"
 require "powerup"
 stage = {}
-local background = {}
+background = {}
 platformId = 1
 powerupId = 2
 
@@ -17,14 +17,15 @@ function stage.load()
   background.height = stage.height
   stage.scaleX = stage.width / stage.sprite:getWidth()
   stage.scaleY = stage.height / stage.sprite:getHeight()
-  stage.velocity = stage.width/3
-  background.velocity = stage.velocity/3
+  stage.maxV = stage.width/3
+  stage.velocity = stage.maxV
+  background.maxV = stage.velocity/3
+  background.velocity = background.maxV
   stage.position = 0;
   stage.elements = {}
   stage.platformHeight = 0.55*stage.height+20
   loadElement(platformId, platform)
   loadElement(powerupId, powerup)
-  stage.screen = 1
 end
 
 function loadElement(id, class)
@@ -33,14 +34,26 @@ function loadElement(id, class)
 end
 
 function stage.prepareBackgrounds(data)
+  background.velocity = background.maxV
+  stage.velocity = stage.maxV
   background.position = data.back1Pos
   stage.position = data.back2Pos
   audio.playPlayerRun()
 end
 
 function stage.start()
+  stage.screen = 1
+end
+
+function stage.testSpawn()
   bullet.randomSpawn()
   dragon.spawn()
+end
+
+function stage.quit()
+  for i,v in ipairs(stage.elements) do
+    table.removeAll(v.list)
+  end
 end
 
 function stage.update(dt)
@@ -87,11 +100,16 @@ function stage.draw()
   love.graphics.draw(stage.sprite,point+stage.width,0,0,stage.scaleX,stage.scaleY)
   --love.graphics.draw(stage.sprite,0,0,0,love.graphics.getWidth(),love.graphics.getHeight())
   for i,v in ipairs(stage.elements) do
-    love.graphics.setColor(v.color)
-    for j,w in ipairs(v.list) do
-      love.graphics.rectangle("fill", w.x,w.y,w.width,w.height)
+    if v.color ~= nil then
+      love.graphics.setColor(v.color)
+      for j,w in ipairs(v.list) do
+        love.graphics.rectangle("fill", w.x,w.y,w.width,w.height)
+      end
+      love.graphics.setColor(255,255,255)
+    else
+      for j,w in ipairs(v.list) do
+        love.graphics.draw(v.image,w.x,w.y,0,w.width/v.imgW,w.height/v.imgH)
+      end
     end
   end
-  love.graphics.setColor(255,255,255)
-  love.graphics.print(stage.screen,0,0,0,4,4)
 end

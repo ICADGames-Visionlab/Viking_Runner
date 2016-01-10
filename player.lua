@@ -1,11 +1,14 @@
 require "stage"
 require "axe"
 require "shield"
-require "contact" 
+require "contact"
+require "animations"
+require "stage"
 
 player = {}
 run = 0
 local jump = 1
+local death = 2
 local state = 0
 local localGravity = -1100
 floor = 615
@@ -30,20 +33,6 @@ function player.load()
   player.sprites[run].sheet = player.runSheet
   player.sprites[run].quads={}
   player.offset = {x=65,y=33}
-  --[[
-  player.sprites[run].quads = {
-    love.graphics.newQuad(0,0,w,h,aw,ah),
-    love.graphics.newQuad(w,23,w,h-23,aw,ah),
-    love.graphics.newQuad(2*w,34,w,h-34,aw,ah),
-    love.graphics.newQuad(3*w,43,w,h-43,aw,ah),
-    love.graphics.newQuad(4*w,50,w,h-50,aw,ah),
-    love.graphics.newQuad(0,h,w,h,aw,ah),
-    love.graphics.newQuad(w,h,w,h,aw,ah),
-    love.graphics.newQuad(2*w,h,w,h,aw,ah),
-    love.graphics.newQuad(3*w,h,w,h,aw,ah),
-    love.graphics.newQuad(4*w,h,w,h,aw,ah)
-  }
-  ]]
   for i=0,11 do
     table.insert(player.sprites[run].quads,love.graphics.newQuad(i*w,0,w,h,aw,ah))
   end
@@ -62,31 +51,34 @@ function player.load()
   end
   player.sprites[jump].comp = animComp.newAnim(8,0.6)
   
+  local img = love.graphics.newImage("/Assets/Character/deathSheet.png")
+  aw = img:getWidth()
+  ah = img:getHeight()
+  w = aw/7
+  h = ah/5
+  player.deathTime = 1.3
+  player.sprites[death] = {
+    sheet = img,
+    quads = animations.loadQuads(34,7,w,h,aw,ah),
+    aComp = animComp.newAnim(34, player.deathTime, false)
+    }
+  
   player.jumpKey = " "
   player.rightKey = "right"
   player.leftKey = "left"
   player.attackKey = "a"
   player.moveDownKey = "down"
-  --for i=0, 10 do
-    --x = i%5
-    --y = math.floor(i/5) --* 370/h
-    --player.sprites[run].quads[i] = love.graphics.newQuad(x*w,y*h,w,h,aw,ah)
-    --player.sprites[run].quads[i] = love.graphics.newQuad(0,0,500,500)
-    --love.graphics.newQuad(
-  --end
+  
   player.sprites[run].time = 0.7--1.5/1.4
   player.curr_frame = 1;
   player.timer = 0
-  player.velocity = stage.velocity;
+  player.velocity = stage.maxV;
   player.xVel = 0
   player.yVel = 0
   player.velForce = 0.4
   player.jumpForce = 700
   player.jumpRotSpeed = 0.6*2*math.pi
   player.jumpRot = 0
-  player.y = floor-player.height
-  player.x = 0
-  player.hasShield = false
   player.invTime = 0
   player.invLimit = 2
   player.blinkTime = 0.1
@@ -97,7 +89,24 @@ function player.load()
   --animations.load()
 end
 
+function player.start()
+  player.y = floor-player.height
+  player.x=0
+  state = run
+  player.timer = 0
+  player.invTime = 0
+  shield.equip()
+  animComp.restart(player.sprites[death].aComp)
+end
+
+function player.quit()
+  axe.removeAll()
+end
+
 function player.keypressed(key)
+  if state==death then
+    return
+  end
   if key==player.jumpKey then
     player.jump()
   elseif key==player.attackKey then
@@ -146,12 +155,38 @@ function player.reachFloor()
 end
 
 function player.update(dt)
-  player.processMovement(dt)
-  player.processJump(dt)
-  player.processInvencibility(dt)
-  player.processContact(dt)
+  if state ~= death then
+    player.processMovement(dt)
+    player.processJump(dt)
+    player.processInvencibility(dt)
+    player.processContact(dt)
+  else
+    player.updateDeath(dt)
+  end
   axe.update(dt)
   --animations.update(dt)
+end
+
+function player.updateDeath(dt)
+  local comp = player.sprites[death].aComp
+  if not comp.finished then
+    animComp.update(dt,comp)
+    if player.y+player.height<floor then
+      --player.fallVel = player.fallVel - localGravity
+      player.y=player.y+player.fallVel*dt
+      if player.y+player.height>floor then
+        player.y = floor-player.height
+      end
+    end
+    if comp.finished then
+      player.dTimer = 2
+    end
+  else
+    player.dTimer = player.dTimer - dt
+    if player.dTimer < 0 then
+      game.returnToMenu()
+    end
+  end
 end
 
 function player.processContact(dt)
@@ -250,22 +285,32 @@ function player.reset()
     if shield.exists() then
       shield.hit()
     else
-      animations.createSplash(player.x,player.y)
-      player.x = 0
-      player.y = floor-player.height
-      player.xVel = 0
-      player.yVel = 0
-      shield.equip()
+      player.die()
     end
     player.invTime = player.invLimit
   end
 end
 
+function player.die()
+  animations.createSplash(player.x,player.y)
+  --player.x = 0
+  --player.y = floor-player.height
+  player.fallVel = (floor-(player.y+player.height))/(player.deathTime*19.5/34)
+  player.xVel = 0
+  player.yVel = 0
+  --shield.equip()
+  state = death
+  stage.velocity = 0
+  background.velocity = 0
+ --player
+end
+
 function player.draw()
   sprite = player.sprites[state]
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
-  
-  if player.invTime==0 or math.floor((player.invLimit-player.invTime)/player.blinkTime)%2==1 then
+  if state == death then
+    love.graphics.draw(sprite.sheet, sprite.quads[sprite.aComp.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
+  elseif player.invTime==0 or math.floor((player.invLimit-player.invTime)/player.blinkTime)%2==1 then
     --[[
     if not player.isJumping then
       love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)

@@ -2,20 +2,24 @@ require "animComp"
 
 dragon = {}
 dragon.list = {}
-dragon.qFrame = 5
+dragon.qFrame = 9
 
 function dragon.load()
-  dragon.spriteSheet = love.graphics.newImage("/Assets/Enemies/mapleDragon.png")
+  dragon.spriteSheet = love.graphics.newImage("/Assets/Enemies/neteDragon.png")
   dragon.quads = {}
-  local w = dragon.spriteSheet:getWidth()
-  local h = dragon.spriteSheet:getHeight()
-  for i=1, dragon.qFrame do
-    dragon.quads[i] = love.graphics.newQuad((i-1)*72,0,72,72,w,h)
+  local aw = dragon.spriteSheet:getWidth()
+  local ah = dragon.spriteSheet:getHeight()
+  local w = aw/5
+  local h = ah
+  for i=1, 5 do
+    dragon.quads[i] = love.graphics.newQuad((i-1)*w,0,w,h,aw,ah)
   end
-  dragon.width = 90
+  for i=1, 4 do
+    dragon.quads[i+5] = dragon.quads[6-i]
+  end
   dragon.height = 90
-  dragon.sw = dragon.width/72
-  dragon.sh = dragon.height/72
+  dragon.scale = dragon.height/h
+  dragon.width = dragon.scale*w
   dragon.swapTime = 1.5
   dragon.moveTime = 0.5
   dragon.yDist = 180

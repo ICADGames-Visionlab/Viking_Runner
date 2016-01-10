@@ -1,8 +1,11 @@
 platform = {}
 
 function platform.load()
+  platform.image = love.graphics.newImage("/Assets/Background/Plataforma.png")
   platform.list = {}
-  platform.color = {0,0,0}
+  platform.imgW = platform.image:getWidth()
+  platform.imgH = platform.image:getHeight()
+  --platform.color = {0,0,0}
 end
 
 function platform.generate(x,y,width,height)

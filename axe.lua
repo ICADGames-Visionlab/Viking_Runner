@@ -16,6 +16,10 @@ function axe.load(scale)
   axe.list = {}
 end
 
+function axe.removeAll()
+  table.removeAll(axe.list)
+end
+
 function axe.spawn(x,y)
   local quant = #axe.list
   if quant<axe.limit then

@@ -11,7 +11,6 @@ function menu.load()
   menu.backgrounds[1].speed = w/12
   menu.backgrounds[2].speed = w/4
   menu.animating = false
-  menu.alpha = 255
   menu.alphaVel = 160
   menu.fadeOutTime = 1
   local img = love.graphics.newImage("/Assets/Tela_Intro/Placa_Intro.png")
@@ -19,7 +18,7 @@ function menu.load()
   local h = 0.6944*bHeight
   local s = h/img:getHeight()
   local w = s*img:getWidth()
-  menu.placa = {image=img,x=(love.graphics.getWidth()-w)/2,y=0,width=w,height=h,scale=s}
+  menu.placa = {image=img,x=(love.graphics.getWidth()-w)/2,firstY = -h, secondY = 0,width=w,height=h,scale=s}
   img = love.graphics.newImage("/Assets/Tela_Intro/Start_Game.png")
   h = 240/3004*bHeight
   s = h/img:getHeight()
@@ -32,6 +31,11 @@ function menu.load()
   img = love.graphics.newImage("/Assets/Tela_Intro/Axe_Selection.png")
   menu.selector = {dist=70*s,image=img,width=s*img:getWidth(),height=s*img:getHeight(),s=s}
   putSelector(play)
+end
+
+function menu.start()
+  menu.alpha = 255
+  menu.placa.y = menu.placa.secondY
 end
 
 function putSelector(ind)
@@ -56,6 +60,7 @@ function loadBackground(string)
 end
 
 function menu.keypressed(key)
+  if menu.isAnimating then return false end
   if key=="down" then
     putSelector(menu.selector.ind%#menu.buttons+1)
   elseif key=="up" then

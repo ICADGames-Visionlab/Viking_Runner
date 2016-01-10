@@ -11,23 +11,9 @@ function contact.isInRectContact(ax,ay,aw,ah,bx,by,bw,bh)
 end
 
 function contact.isInRectXRange(a,b)
-  if a.x < b.x then
-    if a.x+a.width > b.x then
-      return true
-    end
-  elseif a.x<b.x+b.width then
-    return true
-  end
-  return false
+  return a.x < b.x+b.width and b.x<a.x+a.width
 end
 
 function contact.isInRectYRange(a,b)
-  if a.y < b.y then
-    if a.y+a.height > b.y then
-      return true
-    end
-  elseif a.y<b.y+b.height then
-    return true
-  end
-  return false
+  return a.y < b.y+b.height and b.y<a.y+a.height
 end

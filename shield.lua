@@ -3,8 +3,7 @@ shield = {}
 function shield.load(player)
   local img = love.graphics.newImage("/Assets/Character/shield.png")
   shield.img=img
-  shield.colors = {{255,0,0,190},{255,255,0,190},{0,255,0,190}}
-  shield.reset()
+  shield.colors = {{255,0,0,190},{255,255,0,190},{255,255,255,255}}
   shield.owner = player
   shield.x = player.width*0.6
   shield.y = player.height*0.4
@@ -40,6 +39,7 @@ function shield.hit()
   if shield.life>0 then
     shield.life = shield.life-1
   end
+  audio.playShield()
 end
 
 function shield.reset()

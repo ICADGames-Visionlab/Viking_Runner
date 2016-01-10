@@ -7,15 +7,29 @@ require "animations"
 game = {}
 game.isPaused = false
 
+local loadModule
+
 function game.load()
   game.pauseImg = love.graphics.newImage("/Assets/Tela_Intro/Pause.png")
-  stage.load()
-  player.load()
-  enemies.load()
-  bullet.load()
+  game.modules = {}
+  loadModule(stage)
+  loadModule(player)
+  loadModule(enemies)
+  loadModule(bullet)
+  loadModule(animations)
+end
+
+function loadModule(mod)
+  mod.load()
+  table.insert(game.modules,mod)
+end
+
+function game.start(data)
   game.startTime = 2
   game.startAnim = animComp.newAnim(12,player.sprites[run].time)
-  animations.load()
+  player.start()
+  stage.start()
+  game.prepareBackgrounds(data)
 end
 
 function game.keypressed(key)
@@ -32,27 +46,33 @@ end
 function game.update(dt)
   if not game.isPaused then
     stage.update(dt)
-    if game.startTime>0 then game.startUpdate(dt) else       player.update(dt) end
-    enemies.update(dt)
-    bullet.update(dt)
-    animations.update(dt)
+    if game.startTime>0 then
+      game.startUpdate(dt)
+    else
+      player.update(dt)
+      enemies.update(dt)
+      bullet.update(dt)
+      animations.update(dt)
+    end
   end
 end
 
 function game.draw()
   stage.draw()
-  if game.startTime>0 then game.startDraw() else player.draw() end
-  enemies.draw()
-  bullet.draw()
-  animations.draw()
-  game.pauseDraw()
+  if game.startTime>0 then game.startDraw() else
+    player.draw()
+    enemies.draw()
+    bullet.draw()
+    animations.draw()
+    game.pauseDraw()
+  end
 end
 
 function game.startUpdate(dt)
   game.startTime = game.startTime-dt
   if game.startTime<0 then
     game.startTime = 0
-    game.start()
+    game.startAction()
   end
   player.x = -player.imgWidth+(1-game.startTime/2)*2*player.imgHeight
   animComp.update(dt,game.startAnim)
@@ -67,14 +87,15 @@ end
 
 function game.prepareBackgrounds(data)
   stage.prepareBackgrounds(data)
-  player.x = -player.width
+  player.x = -player.imgWidth
 end
 
 function game.startAnimation()
+  
 end
 
-function game.start()
-  stage.start()
+function game.startAction()
+  stage.testSpawn()
 end
 
 function game.pauseDraw()
@@ -85,5 +106,22 @@ function game.pauseDraw()
     love.graphics.rectangle("fill",0,0,w,h)
     love.graphics.setColor(255,255,255)
     love.graphics.draw(game.pauseImg,0,0,0,w/game.pauseImg:getWidth(),h/game.pauseImg:getHeight())
+  end
+end
+
+function game.returnToMenu()
+  game.quit()
+  love.returnToMenu()
+end
+
+function game.quit()
+  for i,v in ipairs(game.modules) do
+    v.quit()
+  end
+end
+
+function table.removeAll(t)
+  while #t>0 do
+    table.remove(t,1)
   end
 end
