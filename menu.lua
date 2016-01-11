@@ -30,12 +30,12 @@ function menu.load()
   table.insert(menu.buttons,{image=img,x=(love.graphics.getWidth()-w)/2,y=2442/3004*bHeight,width=w,height=h,s=s})
   img = love.graphics.newImage("/Assets/Tela_Intro/Axe_Selection.png")
   menu.selector = {dist=70*s,image=img,width=s*img:getWidth(),height=s*img:getHeight(),s=s}
-  putSelector(play)
 end
 
 function menu.start()
   menu.alpha = 255
   menu.placa.y = menu.placa.secondY
+  putSelector(play)
 end
 
 function putSelector(ind)

@@ -99,7 +99,10 @@ function stage.draw()
   love.graphics.draw(stage.sprite,point,0,0,stage.scaleX,stage.scaleY)
   love.graphics.draw(stage.sprite,point+stage.width,0,0,stage.scaleX,stage.scaleY)
   --love.graphics.draw(stage.sprite,0,0,0,love.graphics.getWidth(),love.graphics.getHeight())
+  
   for i,v in ipairs(stage.elements) do
+    v.draw()
+    --[[
     if v.color ~= nil then
       love.graphics.setColor(v.color)
       for j,w in ipairs(v.list) do
@@ -111,5 +114,6 @@ function stage.draw()
         love.graphics.draw(v.image,w.x,w.y,0,w.width/v.imgW,w.height/v.imgH)
       end
     end
+    ]]
   end
 end

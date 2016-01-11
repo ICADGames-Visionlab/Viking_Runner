@@ -2,6 +2,7 @@ require "conf"
 require "audio"
 require "menu"
 require "game"
+require "gameover"
 
 --io.stdout:setvbuf("no")
 
@@ -12,6 +13,7 @@ function love.load()
   menu.load()
   audio.load()
   game.load()
+  gameover.load()
   audio.play(audio.stageMusic)
   gameState.start()
 end
@@ -35,6 +37,10 @@ end
 
 function love.returnToMenu()
   goToState(menu,data)
+end
+
+function love.gameover()
+  goToState(gameover)
 end
 
 function goToState(s,data)

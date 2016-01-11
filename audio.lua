@@ -7,6 +7,7 @@ function audio.load()
   --audio.stageMusic = love.audio.newSource("/Assets/Music/Sonic - DX.mp3")
   audio.stageMusic = love.audio.newSource("/Assets/Music/VRFASE22.ogg")
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
+  audio.gameoverMusic = love.audio.newSource("/Assets/Music/Gameovermusica.wav")
   audio.musicPlaying = nil
   timer = 0
   audio.pRunSound = love.audio.newSource("/Assets/Sfx/corrida.mp3","static")
@@ -72,6 +73,12 @@ function audio.stopFire()
 end
 function audio.playShield()
   audio.playSfx(audio.shieldSound)
+end
+function audio.enterGameover()
+  audio.play(audio.gameoverMusic)
+end
+function audio.leaveGameover()
+  audio.play(audio.stageMusic)
 end
 
 function audio.playSfx(sfx)

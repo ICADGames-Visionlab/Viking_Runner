@@ -19,6 +19,9 @@ function platform.update(dt)
 end
 
 function platform.draw()
+  for i,v in ipairs(platform.list) do
+    love.graphics.draw(platform.image,v.x,v.y,0,v.width/platform.imgW,v.height/platform.imgH)
+  end
 end
 
 function platform.removePlatforms()

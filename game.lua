@@ -111,7 +111,12 @@ end
 
 function game.returnToMenu()
   game.quit()
-  love.returnToMenu()
+  --love.returnToMenu()
+  love.gameover()
+end
+
+function game.goToGameover()
+  
 end
 
 function game.quit()

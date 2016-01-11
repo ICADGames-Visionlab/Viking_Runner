@@ -193,8 +193,8 @@ function player.processContact(dt)
   local c = stage.elements[powerupId]
   for i,v in ipairs(c.list) do
     if contact.isInRectContact(player.x,player.y,player.width,player.height,v.x,v.y,c.width,c.height) then
-      powerup.acquire(i)
-      shield.reset()
+      powerup.acquire(i,v)
+      --shield.reset()
     end
   end
 end
@@ -303,6 +303,7 @@ function player.die()
   stage.velocity = 0
   background.velocity = 0
  --player
+ audio.enterGameover()
 end
 
 function player.draw()
