@@ -63,7 +63,7 @@ function player.load()
     aComp = animComp.newAnim(34, player.deathTime, false)
     }
   
-  player.jumpKey = " "
+  player.jumpKey = "space"
   player.rightKey = "right"
   player.leftKey = "left"
   player.attackKey = "a"
