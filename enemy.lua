@@ -32,6 +32,7 @@ function enemies.update(dt)
 end
 
 function enemies.draw()
+  --love.graphics.setColor(70,70,150)
   for i,v in ipairs(enemies) do
     for j,w in ipairs(v.list) do
       love.graphics.draw(v.spriteSheet,v.quads[w.anim.curr_frame],w.x,302+w.y,0,v.scale,v.scale)
@@ -40,6 +41,7 @@ function enemies.draw()
       end
     end
   end
+  --love.graphics.setColor(255,255,255)
 end
 
 function enemies.collision(enemy, class, player)
