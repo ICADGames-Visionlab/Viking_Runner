@@ -12,10 +12,9 @@ local isRaged=false
 local animationComponent
 local state
 
-function dragonBoss.load(player)
-  dragonBoss.target = player
+function dragonBoss.load()
   dragonBoss.states = {}
-  loadState(idleStateId,dgIdleState)
+  loadState(idleStateId,dgBossIdleState)
   loadState(fireAttackStateId,dgFireAtState)
   loadState(arcFireAttackStateId,dgArcFireAtState)
   changeState(idleStateId)
@@ -27,6 +26,10 @@ function dragonBoss.load(player)
   dragonBoss.scaleH = 1
   dragonBoss.life = 30
   dragonBoxx.maxLife = 30
+end
+
+function dragonBoss.state(player)
+  dragonBoss.target = player
 end
 
 function loadState(id,class)

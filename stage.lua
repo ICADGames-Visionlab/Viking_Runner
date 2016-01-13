@@ -1,5 +1,7 @@
 require "platform"
 require "powerup"
+require "gameState"
+require "dragonBoss"
 stage = {}
 background = {}
 platformId = 1
@@ -26,6 +28,8 @@ function stage.load()
   stage.platformHeight = 0.55*stage.height+20
   loadElement(platformId, platform)
   loadElement(powerupId, powerup)
+  gameState.load(stage)
+  dragonBoss.load()
 end
 
 function loadElement(id, class)
@@ -43,6 +47,12 @@ end
 
 function stage.start()
   stage.screen = 1
+  stage.curr_step = gameState
+end
+
+function stage.startBoss()
+  stage.curr_step = dragonBoss
+  stage.curr_step.start(player)
 end
 
 function stage.testSpawn()
@@ -63,24 +73,8 @@ function stage.update(dt)
   if background.position >= background.width then
     background.position = background.position - background.width
   end
-  if stage.position >= stage.width then
-    stage.screen = stage.screen+1
-    stage.position = stage.position - stage.width
-    w = stage.width
-    h = stage.height
-    sw = w*0.25
-    sh = h*0.05
-    platform.generate(w*1.125,stage.platformHeight,sw,sh)
-    platform.generate(w*1.625,stage.platformHeight,sw,sh)
-    local n = love.math.random()
-    if n>0.7 then
-      powerup.spawn(w*1.125+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
-      n = n-0.7
-    end
-    if n>0.21 then
-      powerup.spawn(w*1.625+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
-    end
-  end
+  stage.curr_step.update(dt)
+  
   for i,v in ipairs(stage.elements) do
     for j,w in ipairs(v.list) do
       w.x = w.x - mov
@@ -116,4 +110,5 @@ function stage.draw()
     end
     ]]
   end
+  stage.curr_frame.draw()
 end
