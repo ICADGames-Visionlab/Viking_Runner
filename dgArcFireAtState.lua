@@ -6,7 +6,7 @@ local timeout = 1
 local steps = {hide=0,attack=1,back=2}
 local getOutTime = 1
 local shotTime = 1.3
-local fireAngle = math.pi/9
+local fireAngle = math.pi/8
 local timer=0
 local trueAngle
 
@@ -53,6 +53,7 @@ function updateHide(dt)
 end
 
 function startAttack()
+  audio.playDgScream()
   timer = timeout
   dgArcFireAtState.actualStep = steps.attack
   --audio

@@ -28,7 +28,7 @@ function dragon.load()
 end
 
 function dragon.spawn()
-  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width})
+  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width,speedY=dragon.speedY})
 end
   
 function dragon.update(dt)
@@ -41,11 +41,11 @@ function dragon.update(dt)
     end
     if v.move>0 then
       v.move = v.move-dt
-      v.y = v.y+dragon.speedY*dt
+      v.y = v.y+v.speedY*dt
       if v.move<=0 then
         v.floor = not v.floor;
         v.y = v.moveTo
-        dragon.speedY = dragon.speedY*-1
+        v.speedY = v.speedY*-1
       end
     end
     v.x = v.x - dragon.speedX*dt

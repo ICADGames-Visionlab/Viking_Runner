@@ -27,6 +27,8 @@ function audio.load()
   audio.fireloopSound:setLooping(true)
   audio.shieldSound = love.audio.newSource("/Assets/Sfx/shieldBreak.wav")
   audio.shieldSound:setVolume(0.4)
+  audio.dragonScream = love.audio.newSource("/Assets/Sfx/DgScream.mp3")
+  audio.dragonScream:setVolume(0.5)
   --etc
 end
 
@@ -82,6 +84,9 @@ function audio.playBossMusic()
 end
 function audio.leaveGameover()
   audio.play(audio.stageMusic)
+end
+function audio.playDgScream()
+  audio.playSfx(audio.dragonScream)
 end
 
 function audio.playSfx(sfx)

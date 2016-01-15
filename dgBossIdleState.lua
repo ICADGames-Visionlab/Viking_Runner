@@ -1,4 +1,5 @@
 dgBossIdleState = {}
+local didShot
 
 function dgBossIdleState.load()
   dgBossIdleState.verticalSpeed=love.graphics.getHeight()/2
@@ -13,6 +14,7 @@ function dgBossIdleState.start(boss,time)
   dgBossIdleState.startMovement()
   boss.curr_sprite = boss.fly
   animComp.restart(boss.fly.aComp)
+  didShot=false
 end
 
 function dgBossIdleState.startMovement()
@@ -37,6 +39,14 @@ function dgBossIdleState.update(dt)
     if math.sign(dgBossIdleState.velocity) == math.sign(dg.y-dgBossIdleState.places[dgBossIdleState.goTo]) then
       dgBossIdleState.goNext()
     end
+  end
+  if dg.fly.aComp.curr_frame == math.floor((dg.fly.aComp.qFrames+1)/2) then
+    if not didShot then
+      didShot = true
+      bullet.spawn(dg.x,dg.y)
+    end
+  else
+    didShot = false
   end
 end
 
