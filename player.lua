@@ -15,7 +15,13 @@ floor = 615
 
 function player.load()
   player.runSheet = love.graphics.newImage("/Assets/Character/VikingRunningSheet.png")
-  player.jumpSheet = love.graphics.newImage("/Assets/Character/jump.png")
+  player.armSheet = love.graphics.newImage("/Assets/Character/VikingRunningArm.png")
+  player.armThrowingSheet = love.graphics.newImage("/Assets/Character/VikingThrowingAxe.png")
+  player.axeComp = animComp.newAnim(12,0.1,false)
+  player.axeComp.finished = true
+  player.armOffset = {x=80,y=33}
+  local jumpSheet = love.graphics.newImage("/Assets/Character/VikingJumpingSheet.png")
+  --player.jumpSheet = love.graphics.newImage("/Assets/Character/jump.png")
   player.sprites = {}
   player.isJumping = false
   aw = player.runSheet:getWidth()
@@ -36,20 +42,23 @@ function player.load()
   for i=0,11 do
     table.insert(player.sprites[run].quads,love.graphics.newQuad(i*w,0,w,h,aw,ah))
   end
-  aw = player.jumpSheet:getWidth()
-  ah = player.jumpSheet:getHeight()
-  w = aw/4
-  h = ah/2
+  aw = jumpSheet:getWidth()
+  ah = jumpSheet:getHeight()
+  w = aw/7
+  h = ah/8
   player.sprites[jump] = {}
   player.sprites[jump].quads = {}
   player.sprites[jump].width = w
   player.sprites[jump].height = h
-  player.sprites[jump].sheet = player.jumpSheet
-  for i=1,8 do
+  player.sprites[jump].sheet = jumpSheet
+  player.jumpForce = 700
+  player.sprites[jump].quads = animations.loadQuads(51,7,w,h,aw,ah)
+  --[[for i=1,51 do
     local ind = i-1
-    player.sprites[jump].quads[i] = love.graphics.newQuad((ind%4)*w,math.floor(ind/4)*h,w,h,aw,ah)
+    player.sprites[jump].quads[i] = love.graphics.newQuad((ind%7)*w,math.floor(ind/7)*h,w,h,aw,ah)
   end
-  player.sprites[jump].comp = animComp.newAnim(8,0.6)
+  ]]
+  player.sprites[jump].comp = animComp.newAnim(51,4*player.jumpForce/(-localGravity),false)
   
   local img = love.graphics.newImage("/Assets/Character/deathSheet.png")
   aw = img:getWidth()
@@ -63,7 +72,7 @@ function player.load()
     aComp = animComp.newAnim(34, player.deathTime, false)
     }
   
-  player.jumpKey = " "
+  player.jumpKey = "space"
   player.rightKey = "right"
   player.leftKey = "left"
   player.attackKey = "a"
@@ -76,7 +85,6 @@ function player.load()
   player.xVel = 0
   player.yVel = 0
   player.velForce = 0.4
-  player.jumpForce = 700
   player.jumpRotSpeed = 0.6*2*math.pi
   player.jumpRot = 0
   player.invTime = 0
@@ -129,6 +137,7 @@ end
 
 function player.attack()
   if axe.spawn(player.x+player.axeLoc.x,player.y+player.axeLoc.y) then
+    animComp.restart(player.axeComp)
     audio.playPlayerAttack()
   end
 end
@@ -160,6 +169,9 @@ function player.update(dt)
     player.processJump(dt)
     player.processInvencibility(dt)
     player.processContact(dt)
+    if not player.axeComp.finished then
+      animComp.update(dt,player.axeComp)
+    end
   else
     player.updateDeath(dt)
   end
@@ -237,13 +249,17 @@ function player.processMovement(dt)
         player.curr_frame = 1
       end
     end
+  elseif state == jump then
+    animComp.update(dt,player.sprites[jump].comp)
   end
 end
 
 function player.processJump(dt)
   if player.isJumping then
-    player.yVel = player.yVel + localGravity*dt
-    player.y = player.y - player.yVel*dt
+    player.yVelN = player.yVel + localGravity*dt
+    local dist = (player.yVel+player.yVelN)*dt/2
+    player.yVel = player.yVelN
+    player.y = player.y - dist--player.yVel*dt
     py = player.y
     feet = py+player.height
     pHeight = stage.platformHeight
@@ -309,20 +325,22 @@ end
 function player.draw()
   sprite = player.sprites[state]
   --love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame], 20,20,0,1,1)
+  local go = false
   if state == death then
     love.graphics.draw(sprite.sheet, sprite.quads[sprite.aComp.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
   elseif player.invTime==0 or math.floor((player.invLimit-player.invTime)/player.blinkTime)%2==1 then
-    --[[
-    if not player.isJumping then
-      love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
+    local frame = state==run and player.curr_frame or sprite.comp.curr_frame
+    love.graphics.draw(sprite.sheet, sprite.quads[frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
+    local run = player.sprites[run]
+    if not player.axeComp.finished then
+      go = true
     else
-      local s = player.width/sprite.width
-      love.graphics.draw(sprite.sheet, sprite.quads[sprite.comp.curr_frame],player.x,player.y,0,s,s)
+      love.graphics.draw(player.armSheet, run.quads[player.curr_frame],player.x,player.y,0,player.scale,player.scale,player.armOffset.x,player.armOffset.y)
     end
-    ]]
-    sprite = player.sprites[run]
-    love.graphics.draw(sprite.sheet, sprite.quads[player.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
     shield.draw()
+    if go then
+      love.graphics.draw(player.armThrowingSheet, run.quads[player.axeComp.curr_frame],player.x,player.y,0,player.scale,player.scale,player.armOffset.x,player.armOffset.y)
+    end
   end
   if configuration.debugBoundingBox then
     love.graphics.rectangle("line", player.x,player.y, player.width, player.height)

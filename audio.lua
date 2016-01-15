@@ -77,6 +77,9 @@ end
 function audio.enterGameover()
   audio.play(audio.gameoverMusic)
 end
+function audio.playBossMusic()
+  audio.play(audio.bossMusic)
+end
 function audio.leaveGameover()
   audio.play(audio.stageMusic)
 end

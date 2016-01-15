@@ -73,7 +73,11 @@ function stage.update(dt)
   if background.position >= background.width then
     background.position = background.position - background.width
   end
-  stage.curr_step.update(dt)
+  if stage.position >= stage.width then
+    stage.position = stage.position - stage.width
+    didChange = true
+  else didChange = false end
+  stage.curr_step.update(dt, didChange)
   
   for i,v in ipairs(stage.elements) do
     for j,w in ipairs(v.list) do
@@ -92,23 +96,27 @@ function stage.draw()
   love.graphics.draw(background.image,backPoint+background.width,0)
   love.graphics.draw(stage.sprite,point,0,0,stage.scaleX,stage.scaleY)
   love.graphics.draw(stage.sprite,point+stage.width,0,0,stage.scaleX,stage.scaleY)
-  --love.graphics.draw(stage.sprite,0,0,0,love.graphics.getWidth(),love.graphics.getHeight())
   
   for i,v in ipairs(stage.elements) do
     v.draw()
-    --[[
-    if v.color ~= nil then
-      love.graphics.setColor(v.color)
-      for j,w in ipairs(v.list) do
-        love.graphics.rectangle("fill", w.x,w.y,w.width,w.height)
-      end
-      love.graphics.setColor(255,255,255)
-    else
-      for j,w in ipairs(v.list) do
-        love.graphics.draw(v.image,w.x,w.y,0,w.width/v.imgW,w.height/v.imgH)
-      end
-    end
-    ]]
   end
-  stage.curr_frame.draw()
+  stage.curr_step.draw()
+  love.graphics.print(stage.screen,0,0,10,10)
+end
+
+function stage.generatePlatforms(withPowerup)
+  w = stage.width
+    h = stage.height
+    sw = w*0.25
+    sh = h*0.05
+    platform.generate(w*1.125,stage.platformHeight,sw,sh)
+    platform.generate(w*1.625,stage.platformHeight,sw,sh)
+    local n = love.math.random()
+    if n>0.7 then
+      powerup.spawn(w*1.125+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
+      n = n-0.7
+    end
+    if n>0.21 then
+      powerup.spawn(w*1.625+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
+    end
 end

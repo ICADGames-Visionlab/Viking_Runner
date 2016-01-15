@@ -1,36 +1,39 @@
 dgArcFireAtState = {}
 
-local numFire = 1
+local numFire = 3
 local maxNumFire = 5
-local timeout = 0.5
+local timeout = 1
 local steps = {hide=0,attack=1,back=2}
 local getOutTime = 1
-local shotTime = 1
+local shotTime = 1.3
 local fireAngle = math.pi/9
 local timer=0
+local trueAngle
 
 function dgArcFireAtState.load()
-  dgArcFireAtState.sheet = love.graphics.newImage()
-  dgArcFireAtState.quads = {}
+  --dgArcFireAtState.sheet = love.graphics.newImage()
+  --dgArcFireAtState.quads = {}
   dgArcFireAtState.shots = {}
-  dgArcFireAtState.shots.width = 100
-  dgArcFireAtState.shots.height = 100
 end
 
 function dgArcFireAtState.start(boss)
+  dgArcFireAtState.shots.width = bullet.width--100
+  dgArcFireAtState.shots.height = bullet.height--100
   dgArcFireAtState.boss = boss
+  boss.curr_sheet = boss.fly
   startHide()
 end
 
 function prepareShots()
   local w = love.graphics.getWidth()
   local y = love.graphics.getHeight()+dgArcFireAtState.shots.height
-  local dx = y/math.tan(fireAngle)
+  local dx = y*math.tan(fireAngle)
   local speedX = -dx/shotTime
   local speedY = y/shotTime
+  y = -dgArcFireAtState.shots.height
   for i=1, numFire do
     local x = love.math.random()*(w-dgArcFireAtState.shots.width)+dgArcFireAtState.shots.width/2
-      table.insert(dgArcFireAtState.shots,{speedX=speedX,timer=timeout*i,isReady=false,x=x+dx,y=y,speedY=speedY})
+      table.insert(dgArcFireAtState.shots,{speedX=speedX,timer=timeout*i,isReady=false,x=x+dx,y=y,speedY=speedY,aComp=animComp.newAnim(6,0.7)})
   end
 end
 
@@ -71,23 +74,22 @@ function updateAttack(dt)
         v.x = v.x+v.speedX*dt
         v.y = v.y+v.speedY*dt
         if v.y>h then
-          table.remove(dgArcFireAtState,i)
-        else contact.inInRectContact(p.x,p.y,p.width,p.height,v.x,v.y,dgArcFireAtState.shots.width,dgArcFireAtState.shots.height)
+          table.remove(dgArcFireAtState.shots,i)
+        elseif contact.isInRectContact(p.x,p.y,p.width,p.height,v.x,v.y,dgArcFireAtState.shots.width,dgArcFireAtState.shots.height) then
           p.reset()
         end
       end
       --Mark stage
     else
       --Timeout
-      if v.timer>0 then
-        v.timer = v.timer-dt
-        if v.timer<0 then
-          v.isReady=true
-          v.timer = timeout
-        end
+      v.timer = v.timer-dt
+      if v.timer<0 then
+        v.isReady=true
+        v.timer = timeout
       end
     end
   end
+  print(#dgArcFireAtState.shots)
   if #dgArcFireAtState.shots==0 then
     startShow()
   end
@@ -112,18 +114,26 @@ end
 function dgArcFireAtState.update(dt)
   local s = dgArcFireAtState.actualStep
   if s==steps.hide then
+    print("hide")
     updateHide(dt)
   elseif s==steps.attack then
+    print("attack")
     updateAttack(dt)
   else
+    print("show")
     updateShow(dt)
   end
 end
 
 function dgArcFireAtState.draw()
-  love.graphics.setColor(255,50,50)
+  local angle = -(math.pi/2-fireAngle)
+  --love.graphics.setColor(255,50,50)
   for i,v in ipairs(dgArcFireAtState.shots) do
-    love.graphics.rectangle("fill",v.x,v.y,dgArcFireAtState.shots.width,dgArcFireAtState.shots.height)
+    if v.isReady then
+      --angle = -(math.pi/2-math.atan((stage.velocity-v.speedX)/v.speedY))
+      love.graphics.draw(bullet.image,bullet.quads[v.aComp.curr_frame],v.x,v.y,angle,bullet.scale,bullet.scale,bullet.offset.x,bullet.offset.y)
+      --love.graphics.rectangle("fill",v.x,v.y,dgArcFireAtState.shots.width,dgArcFireAtState.shots.height)
+    end
   end
-  love.graphics.setColor(255,255,255)
+  --love.graphics.setColor(255,255,255)
 end

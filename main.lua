@@ -4,7 +4,7 @@ require "menu"
 require "game"
 require "gameover"
 
---io.stdout:setvbuf("no")
+io.stdout:setvbuf("no")
 
 local gameState = menu
 local goToState

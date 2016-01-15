@@ -81,6 +81,7 @@ end
 function game.startDraw()
   local sprite = player.sprites[run]
   love.graphics.draw(sprite.sheet, sprite.quads[game.startAnim.curr_frame],player.x,player.y,0,player.scale,player.scale,player.offset.x,player.offset.y)
+  love.graphics.draw(player.armSheet, sprite.quads[game.startAnim.curr_frame],player.x,player.y,0,player.scale,player.scale,player.armOffset.x,player.armOffset.y)
   shield.draw()
   game.pauseDraw()
 end
