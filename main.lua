@@ -3,7 +3,7 @@ require "audio"
 require "menu"
 require "game"
 require "gameover"
-require "PUC_Logo"
+require "PUC_Logo/PUC_Logo"
 
 --io.stdout:setvbuf("no")
 

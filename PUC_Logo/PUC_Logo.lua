@@ -14,7 +14,7 @@ local fadeMax = 240
 local endLogo
 
 function PUC_Logo.load(t1,t2,t3,t4,callback)
-  PUC_Logo.logo=love.graphics.newImage("/Assets/logo.png")
+  PUC_Logo.logo=love.graphics.newImage("/PUC_Logo/logo.png")
   PUC_Logo.logoWidth=PUC_Logo.logo:getWidth()
   PUC_Logo.logoHeight=PUC_Logo.logo:getHeight()
   PUC_Logo.logoX=love.graphics.getWidth()/2
@@ -26,7 +26,7 @@ function PUC_Logo.load(t1,t2,t3,t4,callback)
   PUC_Logo.fvel3=fadeMax/(0.7*t3)
   PUC_Logo.fvel4=fadeMax/t4
   
-  PUC_Logo.logoLetter=love.graphics.newImage("/Assets/letter.png")
+  PUC_Logo.logoLetter=love.graphics.newImage("/PUC_Logo/letter.png")
   PUC_Logo.logoLetterWidth=(logoDist-letterDist)*love.graphics.getWidth() - PUC_Logo.logoWidth
   PUC_Logo.logoLetterHeight=PUC_Logo.logoLetter:getHeight()
   PUC_Logo.logoLetterX=((logoDist+letterDist)*love.graphics.getWidth()-PUC_Logo.logoWidth)/2
