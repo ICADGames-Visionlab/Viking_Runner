@@ -40,13 +40,15 @@ function dgBossIdleState.update(dt)
       dgBossIdleState.goNext()
     end
   end
-  if dg.fly.aComp.curr_frame == math.floor((dg.fly.aComp.qFrames+1)/2) then
-    if not didShot then
-      didShot = true
-      bullet.spawn(dg.x,dg.y)
+  if dg.isRaged then
+    if dg.fly.aComp.curr_frame == math.floor((dg.fly.aComp.qFrames+1)/2) then
+      if not didShot then
+        didShot = true
+        bullet.spawn(dg.x,dg.y)
+      end
+    else
+      didShot = false
     end
-  else
-    didShot = false
   end
 end
 

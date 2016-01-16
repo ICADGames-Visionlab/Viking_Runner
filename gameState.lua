@@ -15,8 +15,14 @@ function gameState.update(dt, changeScreen)
     stage.generatePlatforms(true)
   end
   if stage.screen == 2 then
+    gameState.quit()
     stage.startBoss()
   end
+end
+
+function gameState.quit()
+  enemies.quit()
+  bullet.quit()
 end
 
 function gameState.draw()

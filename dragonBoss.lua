@@ -50,6 +50,7 @@ end
 
 
 function dragonBoss.start(player)
+  dragonBoss.isRaged = false
   dragonBoss.target = player
   dragonBoss.life = dragonBoss.maxLife
   dragonBoss.x=love.graphics.getWidth()-dragonBoss.imgWidth
@@ -80,8 +81,12 @@ function dragonBoss.contact()
   end
   for i,v in ipairs(axe.list) do
     if contact.isInRectContact(v.x,v.y,axe.width,axe.height,dragonBoss.x,dragonBoss.y,dragonBoss.width,dragonBoss.height) then
+      animations.createSplash(v.x,v.y)
       table.remove(axe.list,i)
       dragonBoss.life = dragonBoss.life-1
+      if dragonBoss.life<=dragonBoss.maxLife/2 then
+        dragonBoss.isRaged = true
+      end
     end
   end
 end

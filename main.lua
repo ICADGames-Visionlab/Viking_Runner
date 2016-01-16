@@ -3,10 +3,11 @@ require "audio"
 require "menu"
 require "game"
 require "gameover"
+require "PUC_Logo"
 
-io.stdout:setvbuf("no")
+--io.stdout:setvbuf("no")
 
-local gameState = menu
+local gameState = PUC_Logo
 local goToState
 
 function love.load()
@@ -14,6 +15,7 @@ function love.load()
   audio.load()
   game.load()
   gameover.load()
+  PUC_Logo.load(1,1,1,1,love.returnToMenu)
   audio.play(audio.stageMusic)
   gameState.start()
 end
