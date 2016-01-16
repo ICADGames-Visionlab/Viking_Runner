@@ -93,7 +93,9 @@ function PUC_Logo.draw()
 end
 
 function PUC_Logo.keypressed(key)
-  endLogo()
+  if key=="return" then
+    endLogo()
+  end
 end
 
 function endLogo()
