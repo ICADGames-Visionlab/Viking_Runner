@@ -48,6 +48,7 @@ end
 function stage.start()
   stage.screen = 1
   stage.curr_step = gameState
+  stage.curr_step.start()
 end
 
 function stage.startBoss()
@@ -106,17 +107,33 @@ end
 
 function stage.generatePlatforms(withPowerup)
   w = stage.width
-    h = stage.height
-    sw = w*0.25
-    sh = h*0.05
+  h = stage.height
+  sw = w*0.25
+  sh = h*0.05
+  local nRand = love.math.random()
+  local platA, platB = false,false
+  if nRand > 0.5 then
     platform.generate(w*1.125,stage.platformHeight,sw,sh)
+    nRand = nRand-0.5
+    platA = true
+  end
+  if nRand>0.25 then
     platform.generate(w*1.625,stage.platformHeight,sw,sh)
-    local n = love.math.random()
-    if n>0.7 then
-      powerup.spawn(w*1.125+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
-      n = n-0.7
-    end
-    if n>0.21 then
-      powerup.spawn(w*1.625+(sw-powerup.width)/2,stage.platformHeight-powerup.height,powerup.width,powerup.height)
-    end
+    platB = true
+  end
+  local n = love.math.random()
+  if n>0.8 then
+    local height = platA and stage.platformHeight or floor
+    powerup.spawn(w*1.125+(sw-powerup.width)/2,height-powerup.height,powerup.width,powerup.height)
+    n = n-0.2
+  end
+  if n>0.64 then
+    local height = platB and stage.platformHeight or floor
+    powerup.spawn(w*1.625+(sw-powerup.width)/2,height-powerup.height,powerup.width,powerup.height)
+  end
+end
+
+function stage.spawnEnemy()
+  dragon.spawn()
+  bullet.randomSpawn()
 end

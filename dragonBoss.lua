@@ -2,6 +2,8 @@ require "dgBossIdleState"
 require "dgFireAtState"
 require "dgArcFireAtState"
 require "dgFlyAtState"
+require "dgBossDeathState"
+require "dgSummonState"
 require "contact"
 
 dragonBoss = {}
@@ -10,6 +12,8 @@ local idleStateId=1
 local fireAttackStateId=2
 local arcFireAttackStateId=3
 local flyAttackStateId=4
+local deathStateId=5
+local summonStateId=6
 local isRaged=false
 local state
 
@@ -19,27 +23,38 @@ function dragonBoss.load()
   loadState(fireAttackStateId,dgFireAtState)
   loadState(arcFireAttackStateId,dgArcFireAtState)
   loadState(flyAttackStateId,dgFlyAtState)
+  loadState(deathStateId,dgBossDeathState)
+  loadState(summonStateId,dgSummonState)
   local img = love.graphics.newImage("/Assets/Boss/boss_sheet_fly.png")
   local sWidth = img:getWidth()
   local sHeight = img:getHeight()
   local eachW = sWidth/8
   local eachH = sHeight
-  dragonBoss.imgHeight = 260--100
+  dragonBoss.imgHeight = 280--100
   dragonBoss.scale = dragonBoss.imgHeight/eachH
   dragonBoss.scaleX = dragonBoss.scale
   dragonBoss.scaleY = dragonBoss.scale
   dragonBoss.imgWidth = dragonBoss.scale*eachW
-  dragonBoss.width = 1*dragonBoss.imgWidth
-  dragonBoss.height = 1*dragonBoss.imgHeight
+  local hitBoxScale = {x=1,y=1}
+  dragonBoss.width = hitBoxScale.x*dragonBoss.imgWidth
+  dragonBoss.orWidth = hitBoxScale.x*eachW
+  dragonBoss.height = hitBoxScale.y*dragonBoss.imgHeight
+  dragonBoss.orHeight = hitBoxScale.y*eachH
   dragonBoss.scaleW = 1
   dragonBoss.scaleH = 1
   dragonBoss.maxLife = 30
   local quads = animations.loadQuads(8,8,eachW,eachH,sWidth,sHeight)
-  for i=1, 7 do
-    quads[i+8] = quads[8-i]
+  for i=1, 8 do
+    quads[i+8] = quads[9-i]
   end
-  local fly = {image=img,offset={x=0,y=0},quads=quads,aComp=animComp.newAnim(15,1)}
+  local fly = {image=img,offset={x=0,y=0},quads=quads,aComp=animComp.newAnim(16,1)}
+  local dImg = love.graphics.newImage("/Assets/Boss/boss_dead.png")
+  local dW = dImg:getWidth()
+  local dH = dImg:getHeight()
+  local uniQuad = love.graphics.newQuad(0,0,dW,dH,dW,dH)
+  local death = {image=love.graphics.newImage("/Assets/Boss/boss_dead.png"),offset=fly.offset,quads={uniQuad},aComp=animComp.newAnim(1,50)}
   dragonBoss.fly = fly
+  dragonBoss.death = death
   img = love.graphics.newImage("/Assets/Boss/boss_sheet_rasante.png")
   sWidth = img:getWidth()
   sHeight = img:getHeight()
@@ -62,7 +77,7 @@ end
 
 function loadState(id,class)
   dragonBoss.states[id] = class
-  class.load()
+  class.load(dragonBoss)
 end
 
 function dragonBoss.update(dt, changeScreen)
@@ -86,6 +101,9 @@ function dragonBoss.contact()
       dragonBoss.life = dragonBoss.life-1
       if dragonBoss.life<=dragonBoss.maxLife/2 then
         dragonBoss.isRaged = true
+        if dragonBoss.life==0 then
+          dragonBoss.die()
+        end
       end
     end
   end
@@ -98,9 +116,12 @@ end
 
 function dragonBoss.draw()
   local sp = dragonBoss.curr_sprite
-  love.graphics.draw(sp.image, sp.quads[sp.aComp.curr_frame], dragonBoss.x, dragonBoss.y, 0, dragonBoss.scaleX, dragonBoss.scaleY, sp.offset.x, sp.offset.y)
+  love.graphics.draw(sp.image, sp.quads[sp.aComp.curr_frame], dragonBoss.x+dragonBoss.width/2, dragonBoss.y+dragonBoss.height/2, 0, dragonBoss.scaleX, dragonBoss.scaleY, sp.offset.x+dragonBoss.orWidth/2, sp.offset.y+dragonBoss.orHeight/2)
   state.draw()
   dragonBoss.drawUI()
+  if configuration.debugBoundingBox then
+    love.graphics.rectangle("line",dragonBoss.x,dragonBoss.y,dragonBoss.width,dragonBoss.height)
+  end
 end
 
 function dragonBoss.drawUI()
@@ -119,7 +140,13 @@ function dragonBoss.endState()
 end
 
 function dragonBoss.newActionState()
-  local id = love.math.random()>0.5 and flyAttackStateId or arcFireAttackStateId
+  local chance = 1/3
+  local r = love.math.random()
+  local id = r>2*chance and flyAttackStateId or r>chance and arcFireAttackStateId or deathStateId
   dragonBoss.changeState(id)
   --dragonBoss.changeState(flyAttackStateId)--arcFireAttackStateId)
+end
+
+function dragonBoss.die()
+  dragonBoss.changeState(deathStateId)
 end

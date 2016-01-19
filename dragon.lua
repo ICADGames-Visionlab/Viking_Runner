@@ -28,8 +28,34 @@ function dragon.load()
 end
 
 function dragon.spawn()
-  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width,speedY=dragon.speedY})
+  local y,sign,floor
+  if love.math.random()>0.5 then
+    y=0
+    sign = 1
+    floor = false
+  else
+    y=dragon.yDist
+    sign = -1
+    floor = true
+  end
+  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=floor, move=0, y=y, x=love.graphics.getWidth()+dragon.width,speedY=dragon.speedY*sign})
 end
+
+--function dragon.doubleSpawn()
+  --table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width,speedY=dragon.speedY})
+  --table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=true, move=0, y=dragon.yDist, x=love.graphics.getWidth()+dragon.width,speedY=-dragon.speedY})
+--end
+
+function dragon.doubleSpawn(quant)
+  local w = love.graphics.getWidth()
+  if quant == nil then quant=1 end
+  for i=1, quant do
+    local x = w+i*dragon.width
+    table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width+i*dragon,speedY=dragon.speedY})
+  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=true, move=0, y=dragon.yDist, x=love.graphics.getWidth()+dragon.width,speedY=-dragon.speedY})
+  end
+end
+
   
 function dragon.update(dt)
   for i,v in ipairs(dragon.list) do
@@ -50,13 +76,17 @@ function dragon.update(dt)
     end
     v.x = v.x - dragon.speedX*dt
     if v.x+dragon.width<0 then
-      dragon.replace(v)
+      dragon.remove(i)
     end
   end
 end
 
-function dragon.replace(v)
+function dragon.remove(i)
+  table.remove(dragon.list,i)
+end
+
+function dragon.die(i,v)
   animations.createSplash(v.x+dragon.width/2,302+v.y+dragon.height/2)
-  v.x = love.graphics.getWidth()
   audio.playDragonDeath()
+  dragon.remove(i)
 end

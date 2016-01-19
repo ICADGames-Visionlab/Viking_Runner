@@ -1,11 +1,11 @@
 dgArcFireAtState = {}
 
-local numFire = 3
+local numFire = 5
 local maxNumFire = 5
-local timeout = 1
+local timeout = 0.6
 local steps = {hide=0,attack=1,back=2}
 local getOutTime = 1
-local shotTime = 1.3
+local shotTime = 1 --1.3
 local fireAngle = math.pi/8
 local timer=0
 local trueAngle
@@ -31,9 +31,22 @@ function prepareShots()
   local speedX = -dx/shotTime
   local speedY = y/shotTime
   y = -dgArcFireAtState.shots.height
-  for i=1, numFire do
-    local x = love.math.random()*(w-dgArcFireAtState.shots.width)+dgArcFireAtState.shots.width/2
-      table.insert(dgArcFireAtState.shots,{speedX=speedX,timer=timeout*i,isReady=false,x=x+dx,y=y,speedY=speedY,aComp=animComp.newAnim(6,0.7)})
+  if love.math.random()>0.5 then
+    preparePatternShots(speedX, speedY, dx, y, 10)
+  else
+    for i=1, numFire do
+      local x = love.math.random()*(w-dgArcFireAtState.shots.width)+dgArcFireAtState.shots.width/2
+        table.insert(dgArcFireAtState.shots,{speedX=speedX,timer=timeout*i,isReady=false,x=x+dx,y=y,speedY=speedY,aComp=animComp.newAnim(6,0.7)})
+    end
+  end
+end
+--Make first shot of random to target player
+function preparePatternShots(speedX, speedY, dx, y, quant)
+  local start = dgArcFireAtState.shots.width
+  local final = love.graphics.getWidth()-dgArcFireAtState.shots.width/2
+  local dist = (final-start)/quant
+  for i=1, quant do
+    table.insert(dgArcFireAtState.shots,{speedX=speedX,timer=timeout*i,isReady=false,x=dx+(i-1)*dist,y=y,speedY=speedY,aComp=animComp.newAnim(6,0.7)})
   end
 end
 

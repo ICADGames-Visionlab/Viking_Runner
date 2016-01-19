@@ -41,6 +41,10 @@ function animations.createSplash(x,y,col)
   table.insert(animations.list,{x=x,y=y,aComp = animComp.newAnim(qFrame,time,false),color=c})
 end
 
+function animations.createRandomExplosion(x,y,width,height,col)
+  animations.createSplash(x+love.math.random()*width,y+love.math.random()*height,col)
+end
+
 function animations.draw()
   for i,v in ipairs(animations.list) do
     love.graphics.setColor(v.color)
