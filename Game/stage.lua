@@ -1,7 +1,7 @@
-require "platform"
-require "powerup"
-require "gameState"
-require "dragonBoss"
+require "Game/platform"
+require "Game/powerup"
+require "Game/gameState"
+require "DragonBoss/dragonBoss"
 stage = {}
 background = {}
 platformId = 1

@@ -9,7 +9,6 @@ function audio.load()
   audio.bossMusic = love.audio.newSource("/Assets/Music/God Hand - Devil May Sly.mp3")
   audio.gameoverMusic = love.audio.newSource("/Assets/Music/Gameovermusica.wav")
   audio.musicPlaying = nil
-  timer = 0
   audio.pRunSound = love.audio.newSource("/Assets/Sfx/corrida.mp3","static")
   audio.pJumpSound = love.audio.newSource("/Assets/Sfx/Pulo2.wav","static")
   audio.pAttSound = love.audio.newSource("/Assets/Sfx/Machado.wav")
@@ -94,18 +93,4 @@ function audio.playSfx(sfx)
     love.audio.stop(sfx)
   end
   love.audio.play(sfx)
-end
-
-function audio.update(dt)
-  --audio.switchTest(dt)
-end
-
-function audio.switchTest(dt)
-  if switchMusic then
-  timer = timer + dt
-  if timer >= time then
-    switchMusic = false
-    audio.play(audio.bossMusic)
-  end
-  end
 end

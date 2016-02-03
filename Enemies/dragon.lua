@@ -51,8 +51,8 @@ function dragon.doubleSpawn(quant)
   if quant == nil then quant=1 end
   for i=1, quant do
     local x = w+i*dragon.width
-    table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=love.graphics.getWidth()+dragon.width+i*dragon,speedY=dragon.speedY})
-  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=true, move=0, y=dragon.yDist, x=love.graphics.getWidth()+dragon.width,speedY=-dragon.speedY})
+    table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=false, move=0, y=0, x=x,speedY=dragon.speedY})
+  table.insert(dragon.list,{anim=animComp.newAnim(dragon.qFrame, 0.8), timer=0, floor=true, move=0, y=dragon.yDist, x=x,speedY=-dragon.speedY})
   end
 end
 

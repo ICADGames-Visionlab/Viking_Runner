@@ -1,5 +1,5 @@
 require "contact"
-require "homingBullet"
+require "Enemies/homingBullet"
 
 bullet = {}
 local qFrame = 6
@@ -52,6 +52,11 @@ function bullet.randomSpawn()
   audio.playBullet()
 end
 
+function bullet.spawn(x,y)
+  table.insert(bullet.list,{x=x,y=y,aComp = animComp.newAnim(qFrame,time),vel={x=-bullet.velocity,y=0},angle=math.pi})
+  audio.playBullet()
+end
+
 function bullet.update(dt)
   for i,v in ipairs(bullet.list) do
     if v.isHoming then
@@ -79,12 +84,12 @@ function bullet.checkContact()
     local dist = {x=v.x+bw-sw,y=v.y+bh-sh}
     if math.abs(dist.x)>dw or math.abs(dist.y)>dh then
       removeBullet(i)
-      bullet.randomSpawn()
+      --bullet.randomSpawn()
     elseif contact.isInRectContact(p.x,p.y,p.width,p.height,v.x,v.y,bullet.width,bullet.height) then
       player.reset()
       animations.createSplash(v.x,v.y+bullet.height/2,color.red)
       removeBullet(i)
-      bullet.randomSpawn()
+      --bullet.randomSpawn()
     end
   end
 end
@@ -96,7 +101,7 @@ function removeBullet(i)
   end
 end
 
-function bullet.end()
+function bullet.quit()
   table.removeAll(bullet.list)
 end
 
@@ -107,6 +112,6 @@ function bullet.draw(dt)
     if configuration.debugBoundingBox then
       love.graphics.rectangle("line",v.x,v.y,bullet.width,bullet.height)
     end
-    love.graphics.print(v.angle,400,400)
+    --love.graphics.print(v.angle,400,400)
   end
 end

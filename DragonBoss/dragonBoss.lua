@@ -1,9 +1,9 @@
-require "dgBossIdleState"
-require "dgFireAtState"
-require "dgArcFireAtState"
-require "dgFlyAtState"
-require "dgBossDeathState"
-require "dgSummonState"
+require "DragonBoss/dgBossIdleState"
+require "DragonBoss/dgFireAtState"
+require "DragonBoss/dgArcFireAtState"
+require "DragonBoss/dgFlyAtState"
+require "DragonBoss/dgBossDeathState"
+require "DragonBoss/dgSummonState"
 require "contact"
 
 dragonBoss = {}
@@ -142,7 +142,7 @@ end
 function dragonBoss.newActionState()
   local chance = 1/3
   local r = love.math.random()
-  local id = r>2*chance and flyAttackStateId or r>chance and arcFireAttackStateId or deathStateId
+  local id = r>2*chance and flyAttackStateId or r>chance and arcFireAttackStateId or summonStateId
   dragonBoss.changeState(id)
   --dragonBoss.changeState(flyAttackStateId)--arcFireAttackStateId)
 end

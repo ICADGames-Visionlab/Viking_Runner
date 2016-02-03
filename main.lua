@@ -1,13 +1,14 @@
 require "conf"
 require "audio"
-require "menu"
-require "game"
-require "gameover"
-require "PUC_Logo/PUC_Logo"
+require "Screens/menu"
+require "Game/game"
+require "Screens/gameover"
+--require "PUC_Logo/PUC_Logo"
+require "RPG_Full_Logo/RPG_Logo"
 
 --io.stdout:setvbuf("no")
 
-local gameState = PUC_Logo
+local gameState = RPG_Logo--PUC_Logo
 local goToState
 
 function love.load()
@@ -15,7 +16,7 @@ function love.load()
   audio.load()
   game.load()
   gameover.load()
-  PUC_Logo.load(1,1,1,1,love.returnToMenu)
+  RPG_Logo.load(1.2,1.5,1.2,love.returnToMenu)--PUC_Logo.load(1,1,1,1,love.returnToMenu)
   audio.play(audio.stageMusic)
   gameState.start()
 end

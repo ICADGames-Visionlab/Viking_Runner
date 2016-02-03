@@ -1,5 +1,5 @@
 configuration = {}
-configuration.debugBoundingBox = false
+configuration.debugBoundingBox = true
 
 function love.conf(t)
 	t.title = "Viking Runner"

@@ -1,7 +1,7 @@
-require "stage"
-require "player"
-require "enemy"
-require "bullet"
+require "Game/stage"
+require "Player/player"
+require "Enemies/enemy"
+require "Enemies/bullet"
 require "animations"
 
 game = {}
