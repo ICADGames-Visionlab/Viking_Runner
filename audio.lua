@@ -1,6 +1,4 @@
 audio={}
-time = 10
-switchMusic = true
 
 function audio.load()
   --audio.stageMusic = love.audio.newSource("/Assets/Music/God Hand - Rock a Bay.mp3")
