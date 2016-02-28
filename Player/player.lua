@@ -76,6 +76,7 @@ function player.load()
   player.leftKey = "left"
   player.attackKey = "a"
   player.moveDownKey = "down"
+  player.buttons = {up='up',left='left',down='down',up='up',attack='attack',jump='jump'}
   
   player.sprites[run].time = 0.7--1.5/1.4
   player.curr_frame = 1;
@@ -114,11 +115,11 @@ function player.keypressed(key)
   if state==death then
     return
   end
-  if key==player.jumpKey then
+  if key==inputData.curr.jump then
     player.jump()
-  elseif key==player.attackKey then
+  elseif key==inputData.curr.attack then
     player.attack()
-  elseif key==player.moveDownKey then
+  elseif key==inputData.curr.down then
     player.moveDown()
   end
 end
@@ -220,13 +221,17 @@ function player.processInvencibility(dt)
 end
 
 function player.processMovement(dt)
+  local tDir = inputData.getDirection()
+  player.xVel = 1+player.velForce*tDir.x
+  if tDir.y == 1 then player.moveDown() end
+  --[[
   if love.keyboard.isDown(player.leftKey) then
     player.xVel = 1-player.velForce
   elseif love.keyboard.isDown(player.rightKey) then
       player.xVel = 1+player.velForce
   else
     player.xVel = 1
-  end
+  end]]
   if player.xVel ~= 1 then
     player.x = player.x + player.velocity*(player.xVel - 1)*dt
     if player.x < 0 then

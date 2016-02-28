@@ -40,6 +40,10 @@ function game.keypressed(key)
   end
 end
 
+function game.gamepadpressed(joy,but)
+  player.keypressed(but)
+end
+
 function game.mousepressed(x,y,button)
 end
 

@@ -5,6 +5,7 @@ require "Game/game"
 require "Screens/gameover"
 --require "PUC_Logo/PUC_Logo"
 require "RPG_Full_Logo/RPG_Logo"
+require "inputData"
 
 --io.stdout:setvbuf("no")
 
@@ -19,10 +20,15 @@ function love.load()
   RPG_Logo.load(1.2,1.5,1.2,love.returnToMenu)--PUC_Logo.load(1,1,1,1,love.returnToMenu)
   audio.play(audio.stageMusic)
   gameState.start()
+  inputData.start()
 end
 
 function love.keypressed(key)
   gameState.keypressed(key)
+end
+
+function love.gamepadpressed(joy,but)
+  if gameState.gamepadpressed ~= nil then gameState.gamepadpressed(joy,but) end
 end
 
 function love.mousepressed(x,y,button)
