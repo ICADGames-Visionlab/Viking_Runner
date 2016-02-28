@@ -6,7 +6,7 @@ Viking Runner is an (unfinished) runner-platform game Built on Love2D, a open-so
 
 ##Team:
   - [Isabella Guaríglia](https://www.artstation.com/artist/isabella_gad) - **Animator**
-  - Isabela Motta - **Designer & Artist**
+  - [Isabela Motta](https://www.behance.net/isabelamottaa) - **Designer & Artist**
   - [José Soares](https://github.com/ZEeduardo94) - **Programmer**
   - [Leonardo Malavasi](https://www.behance.net/LeonardoMalavasi/) - **Lead Designer & Artist**
   - [Pietro Pepe](https://github.com/LexLoki/) - **Lead Programmer**
