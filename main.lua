@@ -40,7 +40,6 @@ function love.update(dt)
 end
 
 function love.startGame(data)
-  print("starting")
   goToState(game,data)
 end
 
@@ -53,7 +52,6 @@ function love.gameover()
 end
 
 function goToState(s,data)
-  print("goingToState")
   gameState = s
   --gameState.start(data)
   gameState.start(data)
