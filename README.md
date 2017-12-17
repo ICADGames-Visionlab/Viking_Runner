@@ -1,10 +1,10 @@
-# RPG---Viking-Runner
+# Viking-Runner
 
 Viking Runner is an (unfinished) runner-platform game Built on [LÖVE](https://love2d.org/), an open-source framework for game development in Lua.
 
 ![alt tag](http://grad.inf.puc-rio.br/~e1313256/Projects/VikingRunner/screenshot.png)
 
-##Team:
+## Team:
   - [Isabella Guaríglia](https://www.artstation.com/artist/isabella_gad) - **Animator**
   - [Isabela Motta](https://www.behance.net/isabelamottaa) - **Designer & Artist**
   - [José Soares](https://github.com/ZEeduardo94) - **Programmer**
